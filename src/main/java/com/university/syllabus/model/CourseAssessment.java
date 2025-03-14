@@ -1,4 +1,3 @@
-// CourseAssessment.java
 package com.university.syllabus.model;
 
 import lombok.AllArgsConstructor;

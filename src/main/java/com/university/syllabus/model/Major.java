@@ -1,4 +1,3 @@
-// Major.java
 package com.university.syllabus.model;
 
 import lombok.AllArgsConstructor;
@@ -7,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +20,7 @@ public class Major {
     private Integer id;
     
     @ManyToOne
-    @JoinColumn(name = "discipline_id", nullable = false)
+    @JoinColumn(name = "discipline_id")
     private Discipline discipline;
     
     @Column(name = "full_name")

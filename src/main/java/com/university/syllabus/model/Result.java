@@ -1,4 +1,3 @@
-// Result.java
 package com.university.syllabus.model;
 
 import lombok.AllArgsConstructor;
@@ -6,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "result")

@@ -1,4 +1,3 @@
-// Course.java
 package com.university.syllabus.model;
 
 import lombok.AllArgsConstructor;
@@ -23,15 +22,16 @@ public class Course {
     @JoinColumn(name = "course_level_id", nullable = false)
     private CourseLevel courseLevel;
     
+    @Column(nullable = true)
     private String name;
     
     @Column(name = "name_vn", nullable = false)
     private String nameVn;
     
-    @Column(name = "credit_theory")
+    @Column(name = "credit_theory", nullable = true)
     private Integer creditTheory;
     
-    @Column(name = "credit_lab")
+    @Column(name = "credit_lab", nullable = true)
     private Integer creditLab;
     
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -44,6 +44,23 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<ClassSession> classSessions = new HashSet<>();
+    
+    @OneToMany(mappedBy = "course")
+    @ToString.Exclude
+    private Set<CourseAssessment> courseAssessments = new HashSet<>();
+    
+    @OneToMany(mappedBy = "course")
+    @ToString.Exclude
+    private Set<CourseProgram> coursePrograms = new HashSet<>();
+    
+    @ManyToMany
+    @JoinTable(
+        name = "course_instructor",
+        joinColumns = @JoinColumn(name = "course_id"),
+        inverseJoinColumns = @JoinColumn(name = "instructor_id")
+    )
+    @ToString.Exclude
+    private Set<Instructor> instructors = new HashSet<>();
     
     public Integer getTotalCredits() {
         int theory = creditTheory != null ? creditTheory : 0;

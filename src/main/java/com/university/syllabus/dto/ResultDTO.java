@@ -1,4 +1,3 @@
-// ResultDTO.java
 package com.university.syllabus.dto;
 
 import com.university.syllabus.model.Result;
@@ -7,9 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +13,7 @@ import java.util.stream.Collectors;
 public class ResultDTO {
     private String studentId;
     private String studentName;
-    private Integer classSessionId;
+    private String classSessionId;
     private String courseName;
     private Integer midScore;
     private Integer finalScore;
@@ -61,10 +57,5 @@ public class ResultDTO {
         }
         
         return dto;
-    }
-    
-    // Static method to convert List of Entity to List of DTO
-    public static List<ResultDTO> fromEntities(List<Result> results) {
-        return results.stream().map(ResultDTO::fromEntity).collect(Collectors.toList());
     }
 }

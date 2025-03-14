@@ -1,4 +1,3 @@
-// InstructorDTO.java
 package com.university.syllabus.dto;
 
 import com.university.syllabus.model.Instructor;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class InstructorDTO {
-    private Integer id;
+    private String id;
     private String name;
     private String degree;
     private String email;

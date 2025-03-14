@@ -1,9 +1,9 @@
-// ClassSession.java
 package com.university.syllabus.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import jakarta.persistence.*;
 
@@ -14,24 +14,23 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 public class ClassSession {
     @Id
-    private Integer id;
+    private String id;
+
     
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
-    
+
     @ManyToOne
-    @JoinColumn(name = "instructor_id", nullable = false)
+    @JoinColumn(name = "instructor_id")
     private Instructor instructor;
     
-    @Column(name = "`group`")
-    private Integer group;
-    
-    @Column(name = "group_lab")
-    private Integer groupLab;
-    
+    @Column(name = "semester")
     private Integer semester;
     
     @Column(name = "academic_year")
     private String academicYear;
+    
+    @Column(name = "group_theory")
+    private Integer groupTheory;
 }

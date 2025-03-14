@@ -10,20 +10,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "assessment")
+@Table(name = "program_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Assessment {
+public class ProgramType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
     private String type;
     
-    @Column(name = "type_vn")
-    private String typeVn;
+    private String description;
     
-    @OneToMany(mappedBy = "assessment")
+    @OneToMany(mappedBy = "programType")
     @ToString.Exclude
-    private Set<CourseAssessment> courseAssessments = new HashSet<>();
+    private Set<Program> programs = new HashSet<>();
 }

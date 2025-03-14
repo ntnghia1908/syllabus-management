@@ -3,22 +3,20 @@ package com.university.syllabus.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "student")
+@Table(name = "course_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
+public class CourseType {
     @Id
-    private String id;
+    private Integer id;
     
-    private String name;
+    private String type;
     
-    private String major;
-    
-    private Integer batch;
+    @Column(name = "type_vn")
+    private String typeVn;
 }

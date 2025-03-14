@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultId implements Serializable {
-    private String student;
-    private String classSession;
+public class CouresProgramId implements Serializable {
+    private String course;
+    private Integer program;
 }

@@ -1,4 +1,3 @@
-// ProgramDTO.java
 package com.university.syllabus.dto;
 
 import com.university.syllabus.model.Program;
@@ -31,7 +30,10 @@ public class ProgramDTO {
         dto.setName(program.getName());
         dto.setDuration(program.getDuration());
         dto.setVersion(program.getVersion());
-        dto.setType(program.getType());
+        
+        if (program.getProgramType() != null) {
+            dto.setType(program.getProgramType().getType());
+        }
         
         if (program.getMajor() != null) {
             dto.setMajorId(program.getMajor().getId());
@@ -51,7 +53,6 @@ public class ProgramDTO {
         program.setName(this.name);
         program.setDuration(this.duration);
         program.setVersion(this.version);
-        program.setType(this.type);
         return program;
     }
     
