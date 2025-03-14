@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${course.id + ' - ' + course.name}">Course Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <header th:replace="fragments/header :: header"></header>
+    
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/courses}">Courses</a></li>
+                <li class="breadcrumb-item active" th:text="${course.id}">Course ID</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${course.name}">Course Name</h2>
+            <div>
+                <a th:href="@{/syllabus/{id}(id=${course.id})}" class="btn btn-primary">
+                    <i class="bi bi-file-earmark-text"></i> View Syllabus
+                </a>
+                <div sec:authorize="hasRole('ADMIN')" class="btn-group ms-2">
+                    <a th:href="@{/courses/{id}/edit(id=${course.id})}" class="btn btn-outline-secondary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a th:href="@{/syllabus/{id}/edit(id=${course.id})}" class="btn btn-outline-success">
+                        <i class="bi bi-file-earmark-text"></i> Edit Syllabus
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Course Details -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Course Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Course ID:</strong> <span th:text="${course.id}">IT001</span></p>
+                        <p><strong>Name:</strong> <span th:text="${course.name}">Introduction to Programming</span></p>
+                        <p><strong>Vietnamese Name:</strong> <span th:text="${course.nameVn}">Nhập môn lập trình</span></p>
+                        <p><strong>Level:</strong> <span th:text="${course.courseLevel?.level}">Undergraduate</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Theory Credits:</strong> <span th:text="${course.creditTheory ?: 0}">3</span></p>
+                        <p><strong>Lab Credits:</strong> <span th:text="${course.creditLab ?: 0}">1</span></p>
+                        <p><strong>Total Credits:</strong> <span th:text="${course.totalCredits}">4</span></p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Description:</h6>
+                        <p th:text="${course.description}" class="text-justify">Course description goes here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Learning Outcomes -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">Learning Outcomes</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${learningOutcomes.empty}" class="alert alert-info">
+                    No learning outcomes defined for this course.
+                </div>
+                <div th:unless="${learningOutcomes.empty}">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="outcome : ${learningOutcomes}">
+                                    <td th:text="${outcome.id}">1</td>
+                                    <td th:text="${outcome.description}">Students will be able to understand...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Course Classes -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">Class Sessions</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${course.classSessions.empty}" class="alert alert-info">
+                    No class sessions available for this course.
+                </div>
+                <div th:unless="${course.classSessions.empty}">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Instructor</th>
+                                    <th>Group</th>
+                                    <th>Semester</th>
+                                    <th>Academic Year</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="session : ${course.classSessions}">
+                                    <td th:text="${session.id}">1</td>
+                                    <td>
+                                        <a th:href="@{/instructors/{id}(id=${session.instructor.id})}" 
+                                           th:text="${session.instructor.name}">Dr. John Doe</a>
+                                    </td>
+                                    <td th:text="${session.group}">1</td>
+                                    <td th:text="${session.semester}">1</td>
+                                    <td th:text="${session.academicYear}">2023-2024</td>
+                                    <td>
+                                        <a th:href="@{/class-sessions/{id}(id=${session.id})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

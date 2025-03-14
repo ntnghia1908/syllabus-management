@@ -1,0 +1,102 @@
+/* <!-- src/main/resources/static/css/main.css --> */
+/* Main CSS Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+.footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    background-color: #f5f5f5;
+    border-top: 1px solid #dee2e6;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+.btn-group-sm > .btn, .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    transition: transform 0.3s ease-in-out;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-icon {
+    font-size: 2.5rem;
+    color: #0d6efd;
+}
+
+/* Syllabus styling */
+.syllabus-section {
+    margin-bottom: 2rem;
+}
+
+.syllabus-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.learning-outcome {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid #0d6efd;
+    background-color: #f8f9fa;
+}
+
+/* Print styling */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa !important;
+        color: #000 !important;
+    }
+}

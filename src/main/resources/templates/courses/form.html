@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isNew ? 'Add New Course' : 'Edit Course - ' + course.id}">Course Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <header th:replace="fragments/header :: header"></header>
+    
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/courses}">Courses</a></li>
+                <li class="breadcrumb-item active" th:text="${isNew ? 'Add New Course' : 'Edit Course'}">Form</li>
+            </ol>
+        </nav>
+        
+        <h2 th:text="${isNew ? 'Add New Course' : 'Edit Course - ' + course.id}">Course Form</h2>
+        
+        <div class="card mt-4">
+            <div class="card-body">
+                <form th:action="@{/courses}" th:object="${course}" method="post">
+                    <input type="hidden" th:field="*{id}" th:if="${!isNew}">
+                    <input type="hidden" name="isNew" th:value="${isNew}">
+                    
+                    <div class="row mb-3" th:if="${isNew}">
+                        <label for="id" class="col-sm-2 col-form-label">Course ID:</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{id}" class="form-control" required 
+                                   placeholder="Enter course ID (e.g., IT001)" maxlength="20"
+                                   th:classappend="${#fields.hasErrors('id')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('id')}" th:errors="*{id}">
+                                Course ID error
+                            </div>
+                            <small class="form-text text-muted">Course ID should be unique and follow university code standards.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="name" class="col-sm-2 col-form-label">Course Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{name}" class="form-control" required 
+                                   placeholder="Enter course name in English"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                Course name error
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="nameVn" class="col-sm-2 col-form-label">Vietnamese Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{nameVn}" class="form-control" required 
+                                   placeholder="Enter course name in Vietnamese"
+                                   th:classappend="${#fields.hasErrors('nameVn')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nameVn')}" th:errors="*{nameVn}">
+                                Vietnamese name error
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="courseLevel" class="col-sm-2 col-form-label">Course Level:</label>
+                        <div class="col-sm-10">
+                            <select th:field="*{courseLevel.id}" class="form-select" required
+                                   th:classappend="${#fields.hasErrors('courseLevel')} ? 'is-invalid' : ''">
+                                <option value="">-- Select Course Level --</option>
+                                <option th:each="level : ${courseLevels}" 
+                                        th:value="${level.id}" 
+                                        th:text="${level.level}">Undergraduate</option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('courseLevel')}" th:errors="*{courseLevel}">
+                                Course level error
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="creditTheory" class="col-sm-2 col-form-label">Theory Credits:</label>
+                        <div class="col-sm-4">
+                            <input type="number" th:field="*{creditTheory}" class="form-control" min="0" max="20" 
+                                   placeholder="Theory credits"
+                                   th:classappend="${#fields.hasErrors('creditTheory')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('creditTheory')}" th:errors="*{creditTheory}">
+                                Theory credits error
+                            </div>
+                        </div>
+                        
+                        <label for="creditLab" class="col-sm-2 col-form-label">Lab Credits:</label>
+                        <div class="col-sm-4">
+                            <input type="number" th:field="*{creditLab}" class="form-control" min="0" max="20" 
+                                   placeholder="Lab credits"
+                                   th:classappend="${#fields.hasErrors('creditLab')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('creditLab')}" th:errors="*{creditLab}">
+                                Lab credits error
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="description" class="col-sm-2 col-form-label">Description:</label>
+                        <div class="col-sm-10">
+                            <textarea th:field="*{description}" class="form-control" rows="5" required 
+                                      placeholder="Enter course description"
+                                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">
+                                Description error
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-10 offset-sm-2">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a th:href="@{/courses}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
