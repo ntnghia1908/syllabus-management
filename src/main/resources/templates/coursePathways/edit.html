@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course Pathway</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <header th:replace="fragments/header :: header"></header>
+    
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/programs}">Programs</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/programs/{id}(id=${programId})}" th:text="${coursePathway.program.name}">Program Name</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/programs/{id}/curriculum(id=${programId})}">Curriculum</a></li>
+                <li class="breadcrumb-item active">Edit Course Pathway</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Edit Course Pathway</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/coursePathways/program/{programId}/edit/{pathwayId}/{courseId}(programId=${programId},pathwayId=${pathwayId},courseId=${courseId})}" method="post">
+                    <!-- Hidden fields are not needed as they are in the URL now -->
+                    
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Program:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control-plaintext" 
+                                   th:value="${coursePathway.program.name}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Course:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control-plaintext" 
+                                   th:value="${coursePathway.course.id + ' - ' + coursePathway.course.name}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="newPathwayId" class="col-sm-2 col-form-label">Pathway:</label>
+                        <div class="col-sm-10">
+                            <select name="newPathwayId" id="newPathwayId" class="form-select" required>
+                                <option value="">-- Select Pathway --</option>
+                                <option th:each="pathway : ${allPathways}" 
+                                        th:value="${pathway.id}" 
+                                        th:text="${pathway.pathway}"
+                                        th:selected="${pathway.id == coursePathway.pathway.id}">
+                                    Major Core
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="year" class="col-sm-2 col-form-label">Year:</label>
+                        <div class="col-sm-10">
+                            <select name="year" id="year" class="form-select" required>
+                                <option value="">-- Select Year --</option>
+                                <option value="1" th:selected="${coursePathway.year == 1}">Year 1</option>
+                                <option value="2" th:selected="${coursePathway.year == 2}">Year 2</option>
+                                <option value="3" th:selected="${coursePathway.year == 3}">Year 3</option>
+                                <option value="4" th:selected="${coursePathway.year == 4}">Year 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="semester" class="col-sm-2 col-form-label">Semester:</label>
+                        <div class="col-sm-10">
+                            <select name="semester" id="semester" class="form-select" required>
+                                <option value="">-- Select Semester --</option>
+                                <option value="1" th:selected="${coursePathway.semester == 1}">Semester 1</option>
+                                <option value="2" th:selected="${coursePathway.semester == 2}">Semester 2</option>
+                                <option value="3" th:selected="${coursePathway.semester == 3}">Semester 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <a th:href="@{/programs/{id}/curriculum(id=${programId})}" class="btn btn-secondary me-2">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

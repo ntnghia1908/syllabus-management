@@ -22,7 +22,7 @@ public class ProgramController {
     private final ProgramService programService;
     private final MajorService majorService;
     private final DisciplineService disciplineService;
-    private final CourseProgramService courseProgramService;
+    private final CoursePathwayService coursePathwayService;
     private final ProgramTypeService programTypeService;
     
     @GetMapping
@@ -65,10 +65,10 @@ public class ProgramController {
         Program program = programService.getProgramById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Program", "id", id));
         
-        List<CourseProgram> coursePrograms = courseProgramService.getCourseProgramsByProgram(id);
+        List<CoursePathway> coursePathways = coursePathwayService.getCoursePathwaysByProgramOrderedBySemesterAndYear(id);
         
         model.addAttribute("program", program);
-        model.addAttribute("coursePrograms", coursePrograms);
+        model.addAttribute("coursePathways", coursePathways);
         return "programs/view";
     }
     
@@ -118,10 +118,10 @@ public class ProgramController {
             .orElseThrow(() -> new ResourceNotFoundException("Program", "id", id));
         
         // Check if program has any courses assigned
-        List<CourseProgram> coursePrograms = courseProgramService.getCourseProgramsByProgram(id);
-        if (!coursePrograms.isEmpty()) {
+        List<CoursePathway> coursePathways = coursePathwayService.getCoursePathwaysByProgram(id);
+        if (!coursePathways.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", 
-                "Cannot delete program as it has " + coursePrograms.size() + 
+                "Cannot delete program as it has " + coursePathways.size() + 
                 " courses assigned. Please remove these courses first.");
             return "redirect:/programs";
         }
@@ -136,10 +136,10 @@ public class ProgramController {
         Program program = programService.getProgramById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Program", "id", id));
         
-        List<CourseProgram> coursePrograms = courseProgramService.getCourseProgramsByProgram(id);
+        List<CoursePathway> coursePathways = coursePathwayService.getCoursePathwaysByProgramOrderedBySemesterAndYear(id);
         
         model.addAttribute("program", program);
-        model.addAttribute("coursePrograms", coursePrograms);
+        model.addAttribute("coursePathways", coursePathways);
         return "programs/curriculum";
     }
 }

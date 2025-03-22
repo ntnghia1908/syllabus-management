@@ -27,6 +27,10 @@ public class CourseProgramService {
         return courseProgramRepository.findByProgramId(programId);
     }
     
+    public List<CourseProgram> getCourseProgramsByProgramOrderedBySemesterAndYear(Integer programId) {
+        return courseProgramRepository.findByProgramIdOrderedBySemesterAndYear(programId);
+    }
+    
     public List<CourseProgram> getCourseProgramsByCourse(String courseId) {
         return courseProgramRepository.findByCourseId(courseId);
     }

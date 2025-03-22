@@ -28,4 +28,10 @@ public class CourseProgram {
     
     @Column(name = "course_type_id", nullable = false)
     private Integer courseTypeId;
+    
+    @Column(name = "semester", nullable = true)
+    private Integer semester;
+    
+    @Column(name = "year", nullable = true)
+    private Integer year;
 }

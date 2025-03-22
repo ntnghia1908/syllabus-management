@@ -62,15 +62,15 @@
                 <h5 class="card-title mb-0">Curriculum</h5>
             </div>
             <div class="card-body">
-                <div th:if="${coursePrograms.empty}" class="alert alert-info">
+                <div th:if="${coursePathways.empty}" class="alert alert-info">
                     No courses defined for this program.
                 </div>
-                <div th:unless="${coursePrograms.empty}">
+                <div th:unless="${coursePathways.empty}">
                     <div class="mb-3">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">Filter by Course Type</span>
+                                    <span class="input-group-text">Course Type</span>
                                     <select id="courseTypeFilter" class="form-select">
                                         <option value="all">All Course Types</option>
                                         <option value="1">General Education</option>
@@ -82,7 +82,30 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-text">Year</span>
+                                    <select id="yearFilter" class="form-select">
+                                        <option value="all">All Years</option>
+                                        <option value="1">Year 1</option>
+                                        <option value="2">Year 2</option>
+                                        <option value="3">Year 3</option>
+                                        <option value="4">Year 4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-text">Semester</span>
+                                    <select id="semesterFilter" class="form-select">
+                                        <option value="all">All Semesters</option>
+                                        <option value="1">Semester 1</option>
+                                        <option value="2">Semester 2</option>
+                                        <option value="3">Semester 3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="input-group">
                                     <input type="text" id="courseSearch" class="form-control" placeholder="Search courses...">
                                     <button type="button" class="btn btn-outline-primary">Search</button>
@@ -100,31 +123,25 @@
                                     <th>Course Name</th>
                                     <th>Credits</th>
                                     <th>Type</th>
+                                    <th>Year</th>
+                                    <th>Semester</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="courseProgram : ${coursePrograms}" th:data-type="${courseProgram.courseTypeId}">
-                                    <td th:text="${courseProgram.courseCode}">IT001IU</td>
-                                    <td th:text="${courseProgram.course.id}">IT001</td>
-                                    <td th:text="${courseProgram.course.name}">Introduction to Programming</td>
-                                    <td th:text="${courseProgram.course.totalCredits}">4</td>
+                                <tr th:each="coursePathway : ${coursePathways}" th:data-pathway="${coursePathway.pathway.id}">
+                                    <td th:text="${coursePathway.course.id}">IT001</td>
+                                    <td th:text="${coursePathway.course.id}">IT001</td>
+                                    <td th:text="${coursePathway.course.name}">Introduction to Programming</td>
+                                    <td th:text="${coursePathway.course.totalCredits}">4</td>
                                     <td>
-                                        <span th:switch="${courseProgram.courseTypeId}">
-                                            <span th:case="1" class="badge bg-secondary">General Education</span>
-                                            <span th:case="2" class="badge bg-primary">Foundation</span>
-                                            <span th:case="3" class="badge bg-success">Major Elective</span>
-                                            <span th:case="4" class="badge bg-info">Major Core</span>
-                                            <span th:case="5" class="badge bg-warning">Capstone</span>
-                                            <span th:case="*" class="badge bg-light text-dark">Other</span>
-                                        </span>
+                                        <span th:text="${coursePathway.pathway.pathway}" class="badge bg-info">Major Core</span>
                                     </td>
+                                    <td th:text="${coursePathway.year}">1</td>
+                                    <td th:text="${coursePathway.semester}">1</td>
                                     <td>
-                                        <a th:href="@{/courses/{id}(id=${courseProgram.course.id})}" class="btn btn-sm btn-outline-primary">
+                                        <a th:href="@{/courses/{id}(id=${coursePathway.course.id})}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a th:href="@{/syllabus/{id}(id=${courseProgram.course.id})}" class="btn btn-sm btn-outline-info">
-                                            <i class="bi bi-file-earmark-text"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -142,34 +159,42 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
     <script>
-        // Filter table by course type
-        document.getElementById('courseTypeFilter').addEventListener('change', function() {
-            const value = this.value;
+        // Apply all active filters
+        function applyFilters() {
+            const pathwayValue = document.getElementById('courseTypeFilter').value;
+            const yearValue = document.getElementById('yearFilter').value;
+            const semesterValue = document.getElementById('semesterFilter').value;
+            const searchValue = document.getElementById('courseSearch').value.toLowerCase();
+            
             const rows = document.querySelectorAll('#curriculumTable tbody tr');
             
             rows.forEach(row => {
-                if (value === 'all' || row.dataset.type === value) {
+                // Get values from data attributes and cells
+                const pathwayMatch = pathwayValue === 'all' || row.dataset.pathway === pathwayValue;
+                const yearMatch = yearValue === 'all' || row.cells[5].textContent.trim() === yearValue;
+                const semesterMatch = semesterValue === 'all' || row.cells[6].textContent.trim() === semesterValue;
+                const textMatch = row.textContent.toLowerCase().includes(searchValue);
+                
+                // Show or hide based on all filters
+                if (pathwayMatch && yearMatch && semesterMatch && textMatch) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
                 }
             });
-        });
+        }
+        
+        // Filter by course type
+        document.getElementById('courseTypeFilter').addEventListener('change', applyFilters);
+        
+        // Filter by year
+        document.getElementById('yearFilter').addEventListener('change', applyFilters);
+        
+        // Filter by semester
+        document.getElementById('semesterFilter').addEventListener('change', applyFilters);
         
         // Search functionality
-        document.getElementById('courseSearch').addEventListener('keyup', function() {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#curriculumTable tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (text.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+        document.getElementById('courseSearch').addEventListener('keyup', applyFilters);
     </script>
 </body>
 </html>
