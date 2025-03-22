@@ -26,7 +26,7 @@ public class ClassSessionService {
         return classSessionRepository.findByCourseId(courseId);
     }
     
-    public List<ClassSession> getClassSessionsByInstructor(Integer instructorId) {
+    public List<ClassSession> getClassSessionsByInstructor(String instructorId) {
         return classSessionRepository.findByInstructorId(instructorId);
     }
     

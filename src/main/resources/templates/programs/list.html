@@ -80,7 +80,7 @@
                                 <td th:text="${program.major?.discipline?.name}">Information Technology</td>
                                 <td th:text="${program.duration}">4</td>
                                 <td th:text="${program.version}">2023</td>
-                                <td th:text="${program.type}">IU</td>
+                                <td th:text="${program.programType?.type}">IU</td>
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a th:href="@{/programs/{id}(id=${program.id})}" class="btn btn-sm btn-outline-primary">

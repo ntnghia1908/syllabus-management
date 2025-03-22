@@ -23,6 +23,7 @@ public class ProgramController {
     private final MajorService majorService;
     private final DisciplineService disciplineService;
     private final CourseProgramService courseProgramService;
+    private final ProgramTypeService programTypeService;
     
     @GetMapping
     public String listPrograms(Model model, 
@@ -75,6 +76,7 @@ public class ProgramController {
     public String newProgram(Model model) {
         model.addAttribute("program", new Program());
         model.addAttribute("majors", majorService.getAllMajors());
+        model.addAttribute("programTypes", programTypeService.getAllProgramTypes());
         model.addAttribute("isNew", true);
         return "programs/form";
     }
@@ -86,6 +88,7 @@ public class ProgramController {
         
         model.addAttribute("program", program);
         model.addAttribute("majors", majorService.getAllMajors());
+        model.addAttribute("programTypes", programTypeService.getAllProgramTypes());
         model.addAttribute("isNew", false);
         return "programs/form";
     }
@@ -93,8 +96,12 @@ public class ProgramController {
     @PostMapping
     public String saveProgram(@Valid @ModelAttribute Program program, 
                              BindingResult bindingResult, 
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes,
+                             Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("majors", majorService.getAllMajors());
+            model.addAttribute("programTypes", programTypeService.getAllProgramTypes());
+            model.addAttribute("isNew", program.getId() == null);
             return "programs/form";
         }
         

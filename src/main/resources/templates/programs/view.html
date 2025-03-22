@@ -45,7 +45,7 @@
                         <p><strong>Program ID:</strong> <span th:text="${program.id}">1</span></p>
                         <p><strong>Name:</strong> <span th:text="${program.name}">CS_2023</span></p>
                         <p><strong>Version:</strong> <span th:text="${program.version}">2023</span></p>
-                        <p><strong>Type:</strong> <span th:text="${program.type}">IU</span></p>
+                        <p><strong>Type:</strong> <span th:text="${program.programType?.type}">IU</span></p>
                     </div>
                     <div class="col-md-6">
                         <p><strong>Major:</strong> <span th:text="${program.major?.fullName}">Computer Science</span></p>

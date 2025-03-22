@@ -1,5 +1,6 @@
 package com.university.syllabus.config;
 
+/*
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -58,4 +59,10 @@ public class DatabaseConfig {
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return transactionManager;
     }
+}
+*/
+
+// Using default Spring Boot auto-configuration instead
+public class DatabaseConfig {
+    // Left empty intentionally
 }

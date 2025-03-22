@@ -49,7 +49,7 @@
                     <div class="col-md-6">
                         <p><strong>Duration:</strong> <span th:text="${program.duration + ' years'}">4 years</span></p>
                         <p><strong>Version:</strong> <span th:text="${program.version}">2023</span></p>
-                        <p><strong>Type:</strong> <span th:text="${program.type}">IU</span></p>
+                        <p><strong>Type:</strong> <span th:text="${program.programType?.type}">IU</span></p>
                     </div>
                 </div>
             </div>

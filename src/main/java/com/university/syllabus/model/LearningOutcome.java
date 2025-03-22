@@ -23,6 +23,6 @@ public class LearningOutcome {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
     
-    @Column(name = "description_vn", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "description_vn", columnDefinition = "TEXT")
     private String descriptionVn;
 }

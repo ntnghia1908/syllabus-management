@@ -27,7 +27,7 @@ public class ResultService {
         return resultRepository.findByStudentId(studentId);
     }
     
-    public List<Result> getResultsByClassSessionId(Integer classSessionId) {
+    public List<Result> getResultsByClassSessionId(String classSessionId) {
         return resultRepository.findByClassSessionId(classSessionId);
     }
     

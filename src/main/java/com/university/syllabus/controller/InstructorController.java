@@ -38,7 +38,7 @@ public class InstructorController {
     }
     
     @GetMapping("/{id}")
-    public String viewInstructor(@PathVariable Integer id, Model model) {
+    public String viewInstructor(@PathVariable String id, Model model) {
         Instructor instructor = instructorService.getInstructorById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Instructor", "id", id));
         
@@ -57,7 +57,7 @@ public class InstructorController {
     }
     
     @GetMapping("/{id}/edit")
-    public String editInstructor(@PathVariable Integer id, Model model) {
+    public String editInstructor(@PathVariable String id, Model model) {
         Instructor instructor = instructorService.getInstructorById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Instructor", "id", id));
         
@@ -82,7 +82,7 @@ public class InstructorController {
     }
     
     @GetMapping("/{id}/delete")
-    public String deleteInstructor(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public String deleteInstructor(@PathVariable String id, RedirectAttributes redirectAttributes) {
         Instructor instructor = instructorService.getInstructorById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Instructor", "id", id));
         

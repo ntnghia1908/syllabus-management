@@ -13,7 +13,7 @@ import java.util.List;
 public interface ClassSessionRepository extends JpaRepository<ClassSession, Integer> {
     List<ClassSession> findByCourseId(String courseId);
     
-    List<ClassSession> findByInstructorId(Integer instructorId);
+    List<ClassSession> findByInstructorId(String instructorId);
     
     @Query("SELECT cs FROM ClassSession cs WHERE cs.academicYear = :academicYear")
     List<ClassSession> findByAcademicYear(@Param("academicYear") String academicYear);

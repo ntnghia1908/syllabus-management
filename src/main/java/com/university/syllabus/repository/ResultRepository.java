@@ -12,5 +12,5 @@ import java.util.List;
 public interface ResultRepository extends JpaRepository<Result, ResultId> {
     List<Result> findByStudentId(String studentId);
     
-    List<Result> findByClassSessionId(Integer classSessionId);
+    List<Result> findByClassSessionId(String classSessionId);
 }

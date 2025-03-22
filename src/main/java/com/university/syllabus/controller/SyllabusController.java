@@ -63,6 +63,8 @@ public class SyllabusController {
             model.addAttribute("courseAssessments", courseAssessments);
             model.addAttribute("allAssessments", allAssessments);
             
+            model.addAttribute("newLearningOutcome", new LearningOutcome());
+            
             return "syllabus/edit";
         }
         return "redirect:/courses";

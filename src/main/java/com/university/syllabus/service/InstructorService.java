@@ -18,7 +18,7 @@ public class InstructorService {
         return instructorRepository.findAll();
     }
     
-    public Optional<Instructor> getInstructorById(Integer id) {
+    public Optional<Instructor> getInstructorById(String id) {
         return instructorRepository.findById(id);
     }
     
@@ -30,7 +30,7 @@ public class InstructorService {
         return instructorRepository.save(instructor);
     }
     
-    public void deleteInstructor(Integer id) {
+    public void deleteInstructor(String id) {
         instructorRepository.deleteById(id);
     }
 }

@@ -96,19 +96,16 @@
                     </div>
                     
                     <div class="row mb-3">
-                        <label for="type" class="col-sm-2 col-form-label">Type:</label>
+                        <label for="programType" class="col-sm-2 col-form-label">Type:</label>
                         <div class="col-sm-10">
-                            <select th:field="*{type}" class="form-select" required
-                                   th:classappend="${#fields.hasErrors('type')} ? 'is-invalid' : ''">
+                            <select th:field="*{programType}" class="form-select" required
+                                   th:classappend="${#fields.hasErrors('programType')} ? 'is-invalid' : ''">
                                 <option value="">-- Select Type --</option>
-                                <option value="IU">IU</option>
-                                <option value="GR">GR</option>
-                                <option value="SB">SB</option>
-                                <option value="UN">UN</option>
-                                <option value="WE">WE</option>
-                                <option value="DE">DE</option>
+                                <option th:each="type : ${programTypes}" 
+                                        th:value="${type.id}" 
+                                        th:text="${type.type}">Type Name</option>
                             </select>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('programType')}" th:errors="*{programType}">
                                 Type error
                             </div>
                         </div>
