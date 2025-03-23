@@ -10,7 +10,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <header th:replace="fragments/header :: header"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
     
     <div class="container mt-4">
         <nav aria-label="breadcrumb">
@@ -18,7 +18,7 @@
                 <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
                 <li class="breadcrumb-item"><a th:href="@{/courses}">Courses</a></li>
                 <li class="breadcrumb-item"><a th:href="@{/courses/{id}(id=${course.id})}" th:text="${course.id}">Course ID</a></li>
-                <li class="breadcrumb-item"><a th:href="@{/syllabus/{id}(id=${course.id})}">Syllabus</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/syllabus/{courseId}(courseId=${course.id})}">Syllabus</a></li>
                 <li class="breadcrumb-item active">Edit</li>
             </ol>
         </nav>
@@ -31,10 +31,10 @@
                 <h5 class="card-title mb-0">Learning Outcomes</h5>
             </div>
             <div class="card-body">
-                <div th:if="${learningOutcomes.empty}" class="alert alert-info">
+                <div th:if="${#lists.isEmpty(learningOutcomes)}" class="alert alert-info">
                     No learning outcomes defined yet. Add your first one below.
                 </div>
-                <div th:unless="${learningOutcomes.empty}" class="mb-4">
+                <div th:unless="${#lists.isEmpty(learningOutcomes)}" class="mb-4">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -103,10 +103,10 @@
                 <h5 class="card-title mb-0">Assessment Methods</h5>
             </div>
             <div class="card-body">
-                <div th:if="${courseAssessments.empty}" class="alert alert-info">
+                <div th:if="${#lists.isEmpty(courseAssessments)}" class="alert alert-info">
                     No assessment methods defined yet. Add your first one below.
                 </div>
-                <div th:unless="${courseAssessments.empty}" class="mb-4">
+                <div th:unless="${#lists.isEmpty(courseAssessments)}" class="mb-4">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -138,15 +138,15 @@
                             <tfoot>
                                 <tr>
                                     <th>Total</th>
-                                    <th th:text="${courseAssessments.stream().mapToInt(a -> a.percentage).sum() + '%'}" 
-                                        th:class="${courseAssessments.stream().mapToInt(a -> a.percentage).sum() != 100 ? 'text-danger' : ''}">
+                                    <th th:text="${(#lists.size(courseAssessments) > 0 ? #aggregates.sum(courseAssessments.![percentage]) : 0) + '%'}" 
+                                        th:class="${#lists.size(courseAssessments) > 0 && #aggregates.sum(courseAssessments.![percentage]) != 100 ? 'text-danger' : ''}">
                                         100%
                                     </th>
                                     <th></th>
                                 </tr>
                             </tfoot>
                         </table>
-                        <div class="alert alert-warning" th:if="${courseAssessments.stream().mapToInt(a -> a.percentage).sum() != 100}">
+                        <div class="alert alert-warning" th:if="${#lists.size(courseAssessments) > 0 && #aggregates.sum(courseAssessments.![percentage]) != 100}">
                             Warning: Total assessment percentage should equal 100%.
                         </div>
                     </div>
@@ -184,17 +184,17 @@
         </div>
         
         <div class="d-flex justify-content-between mb-5">
-            <a th:href="@{/syllabus/{id}(id=${course.id})}" class="btn btn-outline-secondary">
+            <a th:href="@{/syllabus/{courseId}(courseId=${course.id})}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back to Syllabus
             </a>
-            <a th:href="@{/syllabus/export/{id}(id=${course.id})}" class="btn btn-outline-success">
+            <a th:href="@{/syllabus/export/{courseId}(courseId=${course.id})}" class="btn btn-outline-success">
                 <i class="bi bi-file-earmark-pdf"></i> Export PDF
             </a>
         </div>
     </div>
     
     <!-- Footer -->
-    <footer th:replace="fragments/footer :: footer"></footer>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
