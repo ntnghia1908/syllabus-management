@@ -70,15 +70,15 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">Course Type</span>
+                                    <span class="input-group-text">Pathway</span>
                                     <select id="courseTypeFilter" class="form-select">
-                                        <option value="all">All Course Types</option>
-                                        <option value="1">General Education</option>
-                                        <option value="2">Foundation</option>
-                                        <option value="3">Major Elective</option>
-                                        <option value="4">Major Core</option>
-                                        <option value="5">Capstone</option>
-                                        <option value="6">Other</option>
+                                        <option value="all">All Pathway Types</option>
+                                        <option value="1">IE1 Toefl < 430</option>
+                                        <option value="2">IE2 500> Toefl >= 430</option>
+                                        <option value="3">AE1 Toefl >= 500</option>
+                                        <option value="4">IE0</option>
+                                        <!-- <option value="5">Capstone</option> -->
+                                        <!-- <option value="6">Other</option> -->
                                     </select>
                                 </div>
                             </div>
@@ -135,7 +135,14 @@
                                     <td th:text="${coursePathway.course.name}">Introduction to Programming</td>
                                     <td th:text="${coursePathway.course.totalCredits}">4</td>
                                     <td>
-                                        <span th:text="${coursePathway.pathway.pathway}" class="badge bg-info">Major Core</span>
+                                        <span th:text="${coursePathway.pathway.pathway}" 
+                                              th:class="${'badge ' + 
+                                                    (coursePathway.pathway.id == 1 ? 'bg-secondary' : 
+                                                     coursePathway.pathway.id == 2 ? 'bg-primary' : 
+                                                     coursePathway.pathway.id == 3 ? 'bg-warning text-dark' : 
+                                                     coursePathway.pathway.id == 4 ? 'bg-success' : 
+                                                     coursePathway.pathway.id == 5 ? 'bg-danger' : 
+                                                     'bg-info')}">Major Core</span>
                                     </td>
                                     <td th:text="${coursePathway.year}">1</td>
                                     <td th:text="${coursePathway.semester}">1</td>
@@ -151,6 +158,24 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Pathway Legend -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">Pathway Types</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-secondary" style="cursor: pointer;" onclick="selectPathwayFilter('1')">General Education</span>
+                    <span class="badge bg-primary" style="cursor: pointer;" onclick="selectPathwayFilter('2')">Foundation</span>
+                    <span class="badge bg-warning text-dark" style="cursor: pointer;" onclick="selectPathwayFilter('3')">Major Elective</span>
+                    <span class="badge bg-success" style="cursor: pointer;" onclick="selectPathwayFilter('4')">Major Core</span>
+                    <span class="badge bg-danger" style="cursor: pointer;" onclick="selectPathwayFilter('5')">Capstone</span>
+                    <span class="badge bg-info" style="cursor: pointer;" onclick="selectPathwayFilter('6')">Other</span>
+                    <span class="badge bg-dark" style="cursor: pointer;" onclick="selectPathwayFilter('all')">Show All</span>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Footer -->
@@ -159,13 +184,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
     <script>
+        // Function to select pathway filter from legend
+        function selectPathwayFilter(value) {
+            const filterSelect = document.getElementById('courseTypeFilter');
+            filterSelect.value = value;
+            applyFilters();
+        }
+    
         // Apply all active filters
         function applyFilters() {
             const pathwayValue = document.getElementById('courseTypeFilter').value;
             const yearValue = document.getElementById('yearFilter').value;
             const semesterValue = document.getElementById('semesterFilter').value;
             const searchValue = document.getElementById('courseSearch').value.toLowerCase();
-            
             const rows = document.querySelectorAll('#curriculumTable tbody tr');
             
             rows.forEach(row => {

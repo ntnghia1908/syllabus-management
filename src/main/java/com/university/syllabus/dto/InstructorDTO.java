@@ -18,17 +18,19 @@ public class InstructorDTO {
     private String name;
     private String degree;
     private String email;
-    private int classCount;
+    private Integer classCount;
     
     // Static method to convert Entity to DTO
     public static InstructorDTO fromEntity(Instructor instructor) {
-        InstructorDTO dto = new InstructorDTO();
-        dto.setId(instructor.getId());
-        dto.setName(instructor.getName());
-        dto.setDegree(instructor.getDegree());
-        dto.setEmail(instructor.getEmail());
-        dto.setClassCount(instructor.getClassSessions() != null ? instructor.getClassSessions().size() : 0);
-        return dto;
+        if (instructor == null) return null;
+        
+        return InstructorDTO.builder()
+                .id(instructor.getId())
+                .name(instructor.getName())
+                .degree(instructor.getDegree())
+                .email(instructor.getEmail())
+                .classCount(instructor.getClassSessions() != null ? instructor.getClassSessions().size() : 0)
+                .build();
     }
     
     // Static method to convert DTO to Entity
@@ -38,11 +40,14 @@ public class InstructorDTO {
         instructor.setName(this.name);
         instructor.setDegree(this.degree);
         instructor.setEmail(this.email);
+        // ClassSessions can't be set directly from DTO
         return instructor;
     }
     
     // Static method to convert List of Entity to List of DTO
     public static List<InstructorDTO> fromEntities(List<Instructor> instructors) {
-        return instructors.stream().map(InstructorDTO::fromEntity).collect(Collectors.toList());
+        return instructors.stream()
+                .map(InstructorDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 }

@@ -76,15 +76,15 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="input-group">
-                                    <span class="input-group-text">Course Type</span>
+                                    <span class="input-group-text">Pathway</span>
                                     <select id="courseTypeFilter" class="form-select">
-                                        <option value="all">All Course Types</option>
-                                        <option value="1">General Education</option>
-                                        <option value="2">Foundation</option>
-                                        <option value="3">Major Elective</option>
-                                        <option value="4">Major Core</option>
-                                        <option value="5">Capstone</option>
-                                        <option value="6">Other</option>
+                                        <option value="all">All Pathway Types</option>
+                                        <option value="1">IE1 Toefl < 430</option>
+                                        <option value="2">IE2 500> Toefl >= 430</option>
+                                        <option value="3">AE1 Toefl >= 500</option>
+                                        <option value="4">IE0</option>
+                                        <!-- <option value="5">Capstone</option> -->
+                                        <!-- <option value="6">Other</option> -->
                                     </select>
                                 </div>
                             </div>
@@ -141,7 +141,14 @@
                                     <td th:text="${coursePathway.course.name}">Introduction to Programming</td>
                                     <td th:text="${coursePathway.course.totalCredits}">4</td>
                                     <td>
-                                        <span th:text="${coursePathway.pathway.pathway}" class="badge bg-info">Major Core</span>
+                                        <span th:text="${coursePathway.pathway.pathway}" 
+                                              th:class="${'badge ' + 
+                                                    (coursePathway.pathway.id == 1 ? 'bg-secondary' : 
+                                                     coursePathway.pathway.id == 2 ? 'bg-primary' : 
+                                                     coursePathway.pathway.id == 3 ? 'bg-warning text-dark' : 
+                                                     coursePathway.pathway.id == 4 ? 'bg-success' : 
+                                                     coursePathway.pathway.id == 5 ? 'bg-danger' : 
+                                                     'bg-info')}">Major Core</span>
                                     </td>
                                     <td th:text="${coursePathway.year}">1</td>
                                     <td th:text="${coursePathway.semester}">1</td>
@@ -177,7 +184,7 @@
                                     <p><strong>Total Courses:</strong> <span th:text="${coursePathways.size()}">40</span></p>
                                 </div>
                                 <div class="col-md-4">
-                                    <p><strong>Total Credits:</strong> <span th:text="${coursePathways.stream().mapToInt(cp -> cp.course.totalCredits).sum()}">120</span></p>
+                                    <p><strong>Total Credits:</strong> <span th:text="${#lists.size(coursePathways) > 0 ? #aggregates.sum(coursePathways.![course.totalCredits]) : 0}">120</span></p>
                                 </div>
                                 <div class="col-md-4">
                                     <div sec:authorize="hasRole('ADMIN')">
@@ -187,6 +194,84 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Pathway Summary Section -->
+                            <div class="card mt-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="card-title mb-0">Pathway Summary</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pathway Type</th>
+                                                    <th>Course Count</th>
+                                                    <th>Total Credits</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- IE1 Toefl < 430 (Pathway ID 1) -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-secondary">IE1 Toefl &lt; 430</span>
+                                                    </td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 1])}">0</td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 1]) > 0 ? #aggregates.sum(coursePathways.?[pathway.id == 1].![course.totalCredits]) : 0}">0</td>
+                                                </tr>
+                                                
+                                                <!-- IE2 500> Toefl >= 430 (Pathway ID 2) -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-primary">IE2 500&gt; Toefl &gt;= 430</span>
+                                                    </td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 2])}">0</td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 2]) > 0 ? #aggregates.sum(coursePathways.?[pathway.id == 2].![course.totalCredits]) : 0}">0</td>
+                                                </tr>
+                                                
+                                                <!-- AE1 Toefl >= 500 (Pathway ID 3) -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-warning text-dark">AE1 Toefl &gt;= 500</span>
+                                                    </td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 3])}">0</td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 3]) > 0 ? #aggregates.sum(coursePathways.?[pathway.id == 3].![course.totalCredits]) : 0}">0</td>
+                                                </tr>
+                                                
+                                                <!-- IE0 (Pathway ID 4) -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-success">IE0</span>
+                                                    </td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 4])}">0</td>
+                                                    <td th:text="${#lists.size(coursePathways.?[pathway.id == 4]) > 0 ? #aggregates.sum(coursePathways.?[pathway.id == 4].![course.totalCredits]) : 0}">0</td>
+                                                </tr>
+                                                
+                                                <!-- Total row -->
+                                                <tr class="table-active">
+                                                    <td><strong>Total</strong></td>
+                                                    <td><strong th:text="${coursePathways.size()}">40</strong></td>
+                                                    <td><strong th:text="${#lists.size(coursePathways) > 0 ? #aggregates.sum(coursePathways.![course.totalCredits]) : 0}">120</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pathway Legend -->
+                    <div class="mt-3">
+                        <h6>Pathway Types:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="selectPathwayFilter('1')">General Education</span>
+                            <span class="badge bg-primary" style="cursor: pointer;" onclick="selectPathwayFilter('2')">Foundation</span>
+                            <span class="badge bg-warning text-dark" style="cursor: pointer;" onclick="selectPathwayFilter('3')">Major Elective</span>
+                            <span class="badge bg-success" style="cursor: pointer;" onclick="selectPathwayFilter('4')">Major Core</span>
+                            <span class="badge bg-danger" style="cursor: pointer;" onclick="selectPathwayFilter('5')">Capstone</span>
+                            <span class="badge bg-info" style="cursor: pointer;" onclick="selectPathwayFilter('6')">Other</span>
+                            <span class="badge bg-dark" style="cursor: pointer;" onclick="selectPathwayFilter('all')">Show All</span>
                         </div>
                     </div>
                 </div>
@@ -200,13 +285,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
     <script>
+        // Function to select pathway filter from legend
+        function selectPathwayFilter(value) {
+            const filterSelect = document.getElementById('courseTypeFilter');
+            filterSelect.value = value;
+            applyFilters();
+        }
+    
         // Apply all active filters
         function applyFilters() {
             const pathwayValue = document.getElementById('courseTypeFilter').value;
             const yearValue = document.getElementById('yearFilter').value;
             const semesterValue = document.getElementById('semesterFilter').value;
             const searchValue = document.getElementById('courseSearch').value.toLowerCase();
-            
             const rows = document.querySelectorAll('#curriculumTable tbody tr');
             
             rows.forEach(row => {
@@ -225,17 +316,16 @@
             });
         }
         
-        // Filter by course type
-        document.getElementById('courseTypeFilter').addEventListener('change', applyFilters);
-        
-        // Filter by year
-        document.getElementById('yearFilter').addEventListener('change', applyFilters);
-        
-        // Filter by semester
-        document.getElementById('semesterFilter').addEventListener('change', applyFilters);
-        
-        // Search functionality
-        document.getElementById('courseSearch').addEventListener('keyup', applyFilters);
+        // Wait for the document to be fully loaded before attaching event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('courseTypeFilter').addEventListener('change', applyFilters);
+            document.getElementById('yearFilter').addEventListener('change', applyFilters);
+            document.getElementById('semesterFilter').addEventListener('change', applyFilters);
+            document.getElementById('courseSearch').addEventListener('keyup', applyFilters);
+            
+            // Apply filters on initial page load
+            applyFilters();
+        });
     </script>
 </body>
 </html>

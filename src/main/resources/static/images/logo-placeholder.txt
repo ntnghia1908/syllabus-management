@@ -1,0 +1,7 @@
+Please add the following PNG files to this directory:
+
+1. university-logo.png - Large logo for homepage (recommended size: 400x400px)
+2. university-logo-small.png - Small logo for navigation bar (recommended size: 72x72px)
+3. favicon.png - Small icon for browser tab (recommended size: 32x32px)
+
+These files should be converted from the Ho Chi Minh City International University logo. 
