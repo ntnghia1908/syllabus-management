@@ -128,10 +128,10 @@
                 <h5 class="card-title mb-0">Learning Outcomes</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(learningOutcomes)}" class="alert alert-info">
+                <div th:if="${learningOutcomes.isEmpty()}" class="alert alert-info">
                     No learning outcomes available for this course.
                 </div>
-                <div th:unless="${#lists.isEmpty(learningOutcomes)}">
+                <div th:unless="${learningOutcomes.isEmpty()}">
                     <p>Upon successful completion of this course, students will be able to:</p>
                     <div th:each="outcome : ${learningOutcomes}" class="learning-outcome">
                         <strong th:text="${outcome.id}">1.</strong>
@@ -147,10 +147,10 @@
                 <h5 class="card-title mb-0">Assessment Methods</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(courseAssessments)}" class="alert alert-info">
+                <div th:if="${courseAssessments.isEmpty()}" class="alert alert-info">
                     No assessment methods defined for this course.
                 </div>
-                <div th:unless="${#lists.isEmpty(courseAssessments)}">
+                <div th:unless="${courseAssessments.isEmpty()}">
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
@@ -171,6 +171,41 @@
                                     <th th:text="${(#lists.size(courseAssessments) > 0 ? #aggregates.sum(courseAssessments.![percentage]) : 0) + '%'}">100%</th>
                                 </tr>
                             </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ASIIN Assessment Tools -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">ASIIN Assessment Tools</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${asiinAssessmentTools.isEmpty()}" class="alert alert-info">
+                    No ASIIN assessment tools defined for this course.
+                </div>
+                <div th:unless="${asiinAssessmentTools.isEmpty()}">
+                    <p class="mb-3">The table below shows the assessment tools used to evaluate Course Learning Outcomes (CLOs) according to ASIIN standards:</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="table-secondary">
+                                    <th>CLO ID</th>
+                                    <th>CLO Description</th>
+                                    <th>Assessment Type</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="tool : ${asiinAssessmentTools}">
+                                    <td th:text="${tool.cloId}" style="font-weight: bold;">CLO-1</td>
+                                    <td th:text="${tool.clo != null ? tool.clo.description : 'N/A'}">Description</td>
+                                    <td th:text="${tool.assessment != null ? tool.assessment.type : 'N/A'}">Quiz</td>
+                                    <td th:text="${tool.percentage != null ? tool.percentage + '%' : 'N/A'}" style="text-align: center;">20%</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

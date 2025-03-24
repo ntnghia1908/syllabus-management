@@ -23,6 +23,16 @@
             </ol>
         </nav>
         
+        <!-- Success and Error Messages -->
+        <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}">Operation successful!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}">An error occurred!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
         <h2 th:text="${'Edit Syllabus - ' + course.name}">Edit Syllabus</h2>
         
         <!-- Learning Outcomes Section -->
@@ -31,10 +41,10 @@
                 <h5 class="card-title mb-0">Learning Outcomes</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(learningOutcomes)}" class="alert alert-info">
+                <div th:if="${learningOutcomes.isEmpty()}" class="alert alert-info">
                     No learning outcomes defined yet. Add your first one below.
                 </div>
-                <div th:unless="${#lists.isEmpty(learningOutcomes)}" class="mb-4">
+                <div th:unless="${learningOutcomes.isEmpty()}" class="mb-4">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -103,10 +113,10 @@
                 <h5 class="card-title mb-0">Assessment Methods</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(courseAssessments)}" class="alert alert-info">
+                <div th:if="${courseAssessments.isEmpty()}" class="alert alert-info">
                     No assessment methods defined yet. Add your first one below.
                 </div>
-                <div th:unless="${#lists.isEmpty(courseAssessments)}" class="mb-4">
+                <div th:unless="${courseAssessments.isEmpty()}" class="mb-4">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -183,6 +193,261 @@
             </div>
         </div>
         
+        <!-- Assessment Tools Section - DISABLED 
+        <div class="card mb-4">
+            <div class="card-header bg-warning">
+                <h5 class="card-title mb-0">Assessment Tools for Learning Outcomes</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${assessmentTools == null || assessmentTools.isEmpty()}" class="alert alert-info">
+                    No assessment tools defined yet. Add your first one below.
+                </div>
+                <div th:unless="${assessmentTools == null || assessmentTools.isEmpty()}" class="mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Learning Outcome</th>
+                                    <th>Assessment Type</th>
+                                    <th>Percentage</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="tool : ${assessmentTools}">
+                                    <td th:text="${tool.learningOutcome.id + ': ' + tool.learningOutcome.description}">1: Description</td>
+                                    <td th:text="${tool.assessment.type}">Quiz</td>
+                                    <td th:text="${tool.percentage != null ? tool.percentage + '%' : 'N/A'}">20%</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal" 
+                                                    th:data-bs-target="'#editToolModal-' + ${tool.assessment.id} + '-' + ${tool.learningOutcome.id}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <a th:href="@{/syllabus/{courseId}/assessment-tool/delete(courseId=${course.id}, assessmentId=${tool.assessment.id}, learningOutcomeId=${tool.learningOutcome.id})}" 
+                                              class="btn btn-sm btn-outline-danger"
+                                              onclick="return confirm('Are you sure you want to delete this assessment tool?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                        
+                                        <!-- Edit Assessment Tool Modal -->
+                                        <div class="modal fade" th:id="'editToolModal-' + ${tool.assessment.id} + '-' + ${tool.learningOutcome.id}" tabindex="-1" aria-labelledby="editToolModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editToolModalLabel">Edit Assessment Tool</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form th:action="@{/syllabus/{courseId}/assessment-tool/update(courseId=${course.id})}" method="post">
+                                                            <input type="hidden" name="assessmentId" th:value="${tool.assessment.id}">
+                                                            <input type="hidden" name="learningOutcomeId" th:value="${tool.learningOutcome.id}">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Learning Outcome:</label>
+                                                                <p class="form-control-plaintext" th:text="${tool.learningOutcome.id + ': ' + tool.learningOutcome.description}">1: Description</p>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Assessment Type:</label>
+                                                                <p class="form-control-plaintext" th:text="${tool.assessment.type}">Quiz</p>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="percentage" class="form-label">Percentage:</label>
+                                                                <input type="number" id="percentage" name="percentage" class="form-control" 
+                                                                      th:value="${tool.percentage}" min="1" max="100" step="0.1" required>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Add Assessment Tool Form -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Add New Assessment Tool</h6>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/syllabus/{courseId}/assessment-tool(courseId=${course.id})}" method="post">
+                            <div class="mb-3">
+                                <label for="learningOutcomeId" class="form-label">Learning Outcome:</label>
+                                <select id="learningOutcomeId" name="learningOutcomeId" class="form-select" required>
+                                    <option value="">-- Select Learning Outcome --</option>
+                                    <option th:each="outcome : ${learningOutcomes}" 
+                                            th:value="${outcome.id}" 
+                                            th:text="${outcome.id + ': ' + outcome.description}">
+                                        1: Description
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="assessmentId" class="form-label">Assessment Type:</label>
+                                <select id="assessmentId" name="assessmentId" class="form-select" required>
+                                    <option value="">-- Select Assessment Type --</option>
+                                    <option th:each="assessment : ${allAssessments}" 
+                                            th:value="${assessment.id}" 
+                                            th:text="${assessment.type}">
+                                        Quiz
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="toolPercentage" class="form-label">Percentage:</label>
+                                <input type="number" id="toolPercentage" name="percentage" class="form-control" 
+                                       min="1" max="100" step="0.1" required>
+                                <small class="form-text text-muted">Enter the percentage this assessment tool contributes.</small>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Add Assessment Tool</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        
+        <!-- ASIIN Assessment Tools Section -->
+        <div class="card mb-4" id="asiin-tools">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="card-title mb-0">ASIIN Assessment Tools</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${asiinAssessmentTools == null || asiinAssessmentTools.isEmpty()}" class="alert alert-info">
+                    No ASIIN assessment tools defined yet. Add your first one below.
+                </div>
+                <div th:unless="${asiinAssessmentTools == null || asiinAssessmentTools.isEmpty()}" class="mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>CLO ID</th>
+                                    <th>CLO Description</th>
+                                    <th>Assessment Type</th>
+                                    <th>Percentage</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="tool : ${asiinAssessmentTools}">
+                                    <td th:text="${tool.cloId}">CLO-1</td>
+                                    <td th:text="${tool.clo != null ? tool.clo.description : 'N/A'}">Description</td>
+                                    <td th:text="${tool.assessment != null ? tool.assessment.type : 'N/A'}">Quiz</td>
+                                    <td th:text="${tool.percentage != null ? tool.percentage + '%' : 'N/A'}">20%</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal" 
+                                                    th:data-bs-target="${tool.assessment != null ? '#editAsiinToolModal-' + tool.assessment.id + '-' + tool.cloId : ''}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <a th:href="@{/syllabus/{courseId}/asiin-assessment-tool/edit(courseId=${course.id}, assessmentId=${tool.assessment != null ? tool.assessment.id : '0'}, cloId=${tool.cloId})}" 
+                                               class="btn btn-sm btn-outline-info">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a th:href="@{/syllabus/{courseId}/asiin-assessment-tool/delete(courseId=${course.id}, assessmentId=${tool.assessment != null ? tool.assessment.id : '0'}, cloId=${tool.cloId})}" 
+                                              class="btn btn-sm btn-outline-danger"
+                                              onclick="return confirm('Are you sure you want to delete this ASIIN assessment tool?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                        
+                                        <!-- Edit ASIIN Assessment Tool Modal -->
+                                        <div class="modal fade" th:if="${tool.assessment != null}" th:id="'editAsiinToolModal-' + ${tool.assessment.id} + '-' + ${tool.cloId}" tabindex="-1" aria-labelledby="editAsiinToolModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editAsiinToolModalLabel">Edit ASIIN Assessment Tool</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form th:action="@{/syllabus/{courseId}/asiin-assessment-tool/update(courseId=${course.id})}" method="post">
+                                                            <input type="hidden" name="assessmentId" th:value="${tool.assessment.id}">
+                                                            <input type="hidden" name="cloId" th:value="${tool.cloId}">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">CLO ID:</label>
+                                                                <p class="form-control-plaintext" th:text="${tool.cloId}">CLO-1</p>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">CLO Description:</label>
+                                                                <p class="form-control-plaintext" th:text="${tool.clo != null ? tool.clo.description : 'N/A'}">Description</p>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Assessment Type:</label>
+                                                                <p class="form-control-plaintext" th:text="${tool.assessment.type}">Quiz</p>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="percentage" class="form-label">Percentage:</label>
+                                                                <input type="number" id="percentage" name="percentage" class="form-control" 
+                                                                      th:value="${tool.percentage}" min="1" max="100" required>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Add ASIIN Assessment Tool Form -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Add New ASIIN Assessment Tool</h6>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/syllabus/{courseId}/asiin-assessment-tool(courseId=${course.id})}" method="post">
+                            <div class="mb-3">
+                                <label for="cloId" class="form-label">CLO ID:</label>
+                                <select id="cloId" name="cloId" class="form-select" required>
+                                    <option value="">-- Select CLO ID --</option>
+                                    <option th:each="clo : ${asiinCLOs}" 
+                                            th:value="${clo.id}" 
+                                            th:text="${clo.id + ': ' + clo.description}">
+                                        CLO-1: Description
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="assessmentId" class="form-label">Assessment Type:</label>
+                                <select id="assessmentId" name="assessmentId" class="form-select" required>
+                                    <option value="">-- Select Assessment Type --</option>
+                                    <option th:each="assessment : ${allAssessments}" 
+                                            th:value="${assessment.id}" 
+                                            th:text="${assessment.type}">
+                                        Quiz
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="asiinPercentage" class="form-label">Percentage:</label>
+                                <input type="number" id="asiinPercentage" name="percentage" class="form-control" 
+                                       min="1" max="100" required>
+                                <small class="form-text text-muted">Enter the percentage this ASIIN assessment tool contributes.</small>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Add ASIIN Assessment Tool</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="d-flex justify-content-between mb-5">
             <a th:href="@{/syllabus/{courseId}(courseId=${course.id})}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back to Syllabus
@@ -198,5 +463,17 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollTo = sessionStorage.getItem('scrollTo');
+            if (scrollTo) {
+                const element = document.getElementById(scrollTo);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+                sessionStorage.removeItem('scrollTo');
+            }
+        });
+    </script>
 </body>
 </html>

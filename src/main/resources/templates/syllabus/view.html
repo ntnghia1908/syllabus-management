@@ -74,10 +74,10 @@
                 <h5 class="card-title mb-0">Learning Outcomes</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(learningOutcomes)}" class="alert alert-info">
+                <div th:if="${learningOutcomes.isEmpty()}" class="alert alert-info">
                     No learning outcomes available for this course.
                 </div>
-                <div th:unless="${#lists.isEmpty(learningOutcomes)}">
+                <div th:unless="${learningOutcomes.isEmpty()}">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -104,10 +104,10 @@
                 <h5 class="card-title mb-0">Assessment Methods</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(courseAssessments)}" class="alert alert-info">
+                <div th:if="${courseAssessments.isEmpty()}" class="alert alert-info">
                     No assessment methods defined for this course.
                 </div>
-                <div th:unless="${#lists.isEmpty(courseAssessments)}">
+                <div th:unless="${courseAssessments.isEmpty()}">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -134,16 +134,16 @@
             </div>
         </div>
         
-        <!-- Assessment Tools for Learning Outcomes -->
+        <!-- Assessment Tools for Learning Outcomes - DISABLED 
         <div class="card mb-4">
             <div class="card-header bg-warning">
                 <h5 class="card-title mb-0">Assessment Tools for Learning Outcomes</h5>
             </div>
             <div class="card-body">
-                <div th:if="${#lists.isEmpty(assessmentTools)}" class="alert alert-info">
+                <div th:if="${assessmentTools.isEmpty()}" class="alert alert-info">
                     No assessment tools defined for this course.
                 </div>
-                <div th:unless="${#lists.isEmpty(assessmentTools)}">
+                <div th:unless="${assessmentTools.isEmpty()}">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -158,6 +158,65 @@
                                     <td th:text="${tool.learningOutcome.id + ': ' + tool.learningOutcome.description}">1: Description</td>
                                     <td th:text="${tool.assessment.type}">Quiz</td>
                                     <td th:text="${tool.percentage != null ? tool.percentage + '%' : 'N/A'}">20%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        
+        <!-- ASIIN Assessment Tools -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">ASIIN Assessment Tools</h5>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/syllabus/{courseId}/edit(courseId=${course.id})}" th:onclick="'sessionStorage.setItem(\'scrollTo\', \'asiin-tools\');'" class="btn btn-sm btn-light">
+                        <i class="bi bi-plus-circle"></i> Manage ASIIN Tools
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div th:if="${asiinAssessmentTools.isEmpty()}" class="alert alert-info">
+                    No ASIIN assessment tools defined for this course.
+                </div>
+                <div th:unless="${asiinAssessmentTools.isEmpty()}">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>CLO ID</th>
+                                    <th>CLO Description</th>
+                                    <th>Assessment Type</th>
+                                    <th>Percentage</th>
+                                    <th sec:authorize="hasRole('ADMIN')">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="tool : ${asiinAssessmentTools}">
+                                    <td th:text="${tool.cloId}">CLO-1</td>
+                                    <td th:text="${tool.clo != null ? tool.clo.description : 'N/A'}">Description</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-info" th:text="${tool.assessment != null ? tool.assessment.type : 'N/A'}">Quiz</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 th:style="'width: ' + ${tool.percentage} + '%'" 
+                                                 th:text="${tool.percentage + '%'}"
+                                                 th:aria-valuenow="${tool.percentage}" 
+                                                 aria-valuemin="0" aria-valuemax="100">20%</div>
+                                        </div>
+                                    </td>
+                                    <td sec:authorize="hasRole('ADMIN')">
+                                        <div class="btn-group">
+                                            <a th:if="${tool.assessment != null}" th:href="@{/syllabus/{courseId}/asiin-assessment-tool/edit(courseId=${course.id}, assessmentId=${tool.assessment.id}, cloId=${tool.cloId})}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
