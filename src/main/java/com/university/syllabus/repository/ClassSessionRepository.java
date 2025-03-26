@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ClassSessionRepository extends JpaRepository<ClassSession, Integer> {
+public interface ClassSessionRepository extends JpaRepository<ClassSession, String> {
     List<ClassSession> findByCourseId(String courseId);
     
     List<ClassSession> findByInstructorId(String instructorId);

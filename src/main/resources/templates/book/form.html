@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 th:text="${book.id == null ? 'Add New Book' : 'Edit Book'}"></h2>
+        
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="${book.id == null ? '/books' : '/books/' + book.id}" th:object="${book}" method="post">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" class="form-control" id="author" th:field="*{author}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="isbn">ISBN</label>
+                <input type="text" class="form-control" id="isbn" th:field="*{isbn}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="publisher">Publisher</label>
+                <input type="text" class="form-control" id="publisher" th:field="*{publisher}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="number" class="form-control" id="year" th:field="*{year}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="/books" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+</html> 

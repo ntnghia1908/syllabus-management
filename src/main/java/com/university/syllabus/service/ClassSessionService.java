@@ -18,7 +18,7 @@ public class ClassSessionService {
         return classSessionRepository.findAll();
     }
     
-    public Optional<ClassSession> getClassSessionById(Integer id) {
+    public Optional<ClassSession> getClassSessionById(String id) {
         return classSessionRepository.findById(id);
     }
     
@@ -42,7 +42,7 @@ public class ClassSessionService {
         return classSessionRepository.save(classSession);
     }
     
-    public void deleteClassSession(Integer id) {
+    public void deleteClassSession(String id) {
         classSessionRepository.deleteById(id);
     }
 }
