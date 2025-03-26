@@ -2,6 +2,8 @@ package com.university.syllabus.controller;
 
 import com.university.syllabus.dto.BookDTO;
 import com.university.syllabus.service.BookService;
+import com.university.syllabus.service.CourseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,12 @@ import java.util.Optional;
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
+    private final CourseService courseService;
 
-    public BookController(BookService bookService) {
+    @Autowired
+    public BookController(BookService bookService, CourseService courseService) {
         this.bookService = bookService;
+        this.courseService = courseService;
     }
 
     @GetMapping
@@ -48,6 +53,11 @@ public class BookController {
             return "book/form";
         }
         return "redirect:/books";
+    }
+
+    @GetMapping("/{id}/courses")
+    public String viewBookCourses(@PathVariable Long id, Model model) {
+        return "redirect:/course-books/book/" + id;
     }
 
     @PostMapping

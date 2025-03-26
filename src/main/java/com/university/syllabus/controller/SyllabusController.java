@@ -111,18 +111,36 @@ public class SyllabusController {
     
     @PostMapping("/{courseId}/assessment")
     public String addCourseAssessment(@PathVariable String courseId, @RequestParam Integer assessmentId, @RequestParam Integer percentage, RedirectAttributes redirectAttributes) {
-        Optional<Course> courseOpt = courseService.getCourseById(courseId);
         Optional<Assessment> assessmentOpt = assessmentService.getAssessmentById(assessmentId);
-        
-        if (courseOpt.isPresent() && assessmentOpt.isPresent()) {
-            CourseAssessment courseAssessment = new CourseAssessment();
-            courseAssessment.setCourse(courseOpt.get());
-            courseAssessment.setAssessment(assessmentOpt.get());
-            courseAssessment.setPercentage(percentage);
-            
-            courseAssessmentService.saveCourseAssessment(courseAssessment);
-            redirectAttributes.addFlashAttribute("success", "Assessment added successfully");
+        if (assessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Assessment with ID " + assessmentId + " not found. It may have been deleted.");
+            return "redirect:/syllabus/" + courseId + "/edit";
         }
+        
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        if (courseOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        // Check if this assessment is already associated with the course
+        List<CourseAssessment> existingAssessments = courseAssessmentService.getCourseAssessmentsByCourse(courseId);
+        boolean alreadyExists = existingAssessments.stream()
+            .anyMatch(ca -> ca.getAssessment().getId().equals(assessmentId));
+            
+        if (alreadyExists) {
+            redirectAttributes.addFlashAttribute("error", "This assessment is already associated with the course");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        CourseAssessment courseAssessment = new CourseAssessment();
+        courseAssessment.setCourse(courseOpt.get());
+        courseAssessment.setAssessment(assessmentOpt.get());
+        courseAssessment.setPercentage(percentage);
+        
+        courseAssessmentService.saveCourseAssessment(courseAssessment);
+        redirectAttributes.addFlashAttribute("success", "Assessment added successfully");
+        
         return "redirect:/syllabus/" + courseId + "/edit";
     }
     
@@ -251,22 +269,40 @@ public class SyllabusController {
             @RequestParam Integer percentage,
             RedirectAttributes redirectAttributes) {
         
-        Optional<Course> courseOpt = courseService.getCourseById(courseId);
         Optional<Assessment> assessmentOpt = assessmentService.getAssessmentById(assessmentId);
-        Optional<AsiinCLO> cloOpt = asiinCLOService.getAsiinCLOById(cloId);
-        
-        if (courseOpt.isPresent() && assessmentOpt.isPresent() && cloOpt.isPresent()) {
-            AsiinAssessmentTool asiinAssessmentTool = new AsiinAssessmentTool();
-            asiinAssessmentTool.setCloId(cloId);
-            asiinAssessmentTool.setCourse(courseOpt.get());
-            asiinAssessmentTool.setAssessment(assessmentOpt.get());
-            asiinAssessmentTool.setPercentage(percentage);
-            
-            asiinAssessmentToolService.saveAsiinAssessmentTool(asiinAssessmentTool);
-            redirectAttributes.addFlashAttribute("success", "ASIIN assessment tool added successfully");
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Could not add ASIIN assessment tool - missing required data");
+        if (assessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Assessment with ID " + assessmentId + " not found. It may have been deleted.");
+            return "redirect:/syllabus/" + courseId + "/edit";
         }
+        
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        if (courseOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<AsiinCLO> cloOpt = asiinCLOService.getAsiinCLOById(cloId);
+        if (cloOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "ASIIN CLO with ID " + cloId + " not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        // Check if this combination already exists
+        AsiinAssessmentToolId id = new AsiinAssessmentToolId(cloId, courseId, assessmentId);
+        Optional<AsiinAssessmentTool> existingTool = asiinAssessmentToolService.getAsiinAssessmentToolById(id);
+        if (existingTool.isPresent()) {
+            redirectAttributes.addFlashAttribute("error", "This assessment tool combination already exists");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        AsiinAssessmentTool asiinAssessmentTool = new AsiinAssessmentTool();
+        asiinAssessmentTool.setCloId(cloId);
+        asiinAssessmentTool.setCourse(courseOpt.get());
+        asiinAssessmentTool.setAssessment(assessmentOpt.get());
+        asiinAssessmentTool.setPercentage(percentage);
+        
+        asiinAssessmentToolService.saveAsiinAssessmentTool(asiinAssessmentTool);
+        redirectAttributes.addFlashAttribute("success", "ASIIN assessment tool added successfully");
         
         return "redirect:/syllabus/" + courseId + "/edit";
     }
@@ -310,22 +346,32 @@ public class SyllabusController {
             @RequestParam String cloId,
             RedirectAttributes redirectAttributes) {
         
-        Optional<Course> courseOpt = courseService.getCourseById(courseId);
         Optional<Assessment> assessmentOpt = assessmentService.getAssessmentById(assessmentId);
-        Optional<AsiinCLO> cloOpt = asiinCLOService.getAsiinCLOById(cloId);
+        if (assessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Assessment with ID " + assessmentId + " not found. It may have been deleted already.");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
         
-        if (courseOpt.isPresent() && assessmentOpt.isPresent() && cloOpt.isPresent()) {
-            AsiinAssessmentToolId id = new AsiinAssessmentToolId(cloId, courseId, assessmentId);
-            Optional<AsiinAssessmentTool> toolOpt = asiinAssessmentToolService.getAsiinAssessmentToolById(id);
-            
-            if (toolOpt.isPresent()) {
-                asiinAssessmentToolService.deleteAsiinAssessmentTool(toolOpt.get());
-                redirectAttributes.addFlashAttribute("success", "ASIIN assessment tool deleted successfully");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "ASIIN assessment tool not found");
-            }
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        if (courseOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<AsiinCLO> cloOpt = asiinCLOService.getAsiinCLOById(cloId);
+        if (cloOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "ASIIN CLO with ID " + cloId + " not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        AsiinAssessmentToolId id = new AsiinAssessmentToolId(cloId, courseId, assessmentId);
+        Optional<AsiinAssessmentTool> toolOpt = asiinAssessmentToolService.getAsiinAssessmentToolById(id);
+        
+        if (toolOpt.isPresent()) {
+            asiinAssessmentToolService.deleteAsiinAssessmentTool(toolOpt.get());
+            redirectAttributes.addFlashAttribute("success", "ASIIN assessment tool deleted successfully");
         } else {
-            redirectAttributes.addFlashAttribute("error", "Could not delete ASIIN assessment tool - missing required data");
+            redirectAttributes.addFlashAttribute("error", "ASIIN assessment tool not found");
         }
         
         return "redirect:/syllabus/" + courseId + "/edit";
@@ -339,28 +385,42 @@ public class SyllabusController {
             Model model,
             RedirectAttributes redirectAttributes) {
         
-        Optional<Course> courseOpt = courseService.getCourseById(courseId);
         Optional<Assessment> assessmentOpt = assessmentService.getAssessmentById(assessmentId);
-        Optional<AsiinCLO> cloOpt = asiinCLOService.getAsiinCLOById(cloId);
+        if (assessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Assessment with ID " + assessmentId + " not found. It may have been deleted.");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
         
-        if (courseOpt.isPresent() && assessmentOpt.isPresent() && cloOpt.isPresent()) {
-            AsiinAssessmentToolId id = new AsiinAssessmentToolId(cloId, courseId, assessmentId);
-            Optional<AsiinAssessmentTool> toolOpt = asiinAssessmentToolService.getAsiinAssessmentToolById(id);
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        if (courseOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<AsiinCLO> cloOpt = asiinCLOService.getAsiinCLOById(cloId);
+        if (cloOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "ASIIN CLO with ID " + cloId + " not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Course course = courseOpt.get();
+        Assessment assessment = assessmentOpt.get();
+        AsiinCLO clo = cloOpt.get();
+        
+        AsiinAssessmentToolId id = new AsiinAssessmentToolId(cloId, courseId, assessmentId);
+        Optional<AsiinAssessmentTool> toolOpt = asiinAssessmentToolService.getAsiinAssessmentToolById(id);
+        
+        if (toolOpt.isPresent()) {
+            model.addAttribute("course", course);
+            model.addAttribute("assessment", assessment);
+            model.addAttribute("clo", clo);
+            model.addAttribute("asiinAssessmentTool", toolOpt.get());
+            model.addAttribute("allAssessments", assessmentService.getAllAssessments());
+            model.addAttribute("asiinCLOs", asiinCLOService.getAllAsiinCLOs());
             
-            if (toolOpt.isPresent()) {
-                model.addAttribute("course", courseOpt.get());
-                model.addAttribute("assessment", assessmentOpt.get());
-                model.addAttribute("clo", cloOpt.get());
-                model.addAttribute("asiinAssessmentTool", toolOpt.get());
-                model.addAttribute("allAssessments", assessmentService.getAllAssessments());
-                model.addAttribute("asiinCLOs", asiinCLOService.getAllAsiinCLOs());
-                
-                return "syllabus/editAsiinAssessmentTool";
-            } else {
-                redirectAttributes.addFlashAttribute("error", "ASIIN assessment tool not found");
-            }
+            return "syllabus/editAsiinAssessmentTool";
         } else {
-            redirectAttributes.addFlashAttribute("error", "Could not find required data for editing ASIIN assessment tool");
+            redirectAttributes.addFlashAttribute("error", "ASIIN assessment tool not found");
         }
         
         return "redirect:/syllabus/" + courseId + "/edit";
@@ -422,6 +482,205 @@ public class SyllabusController {
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "Course not found");
+        }
+        
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @GetMapping("/{courseId}/learning-outcome/{id}/edit")
+    public String showEditLearningOutcomeForm(@PathVariable String courseId, @PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<LearningOutcome> learningOutcomeOpt = learningOutcomeService.getLearningOutcomeById(id);
+        
+        if (learningOutcomeOpt.isPresent()) {
+            LearningOutcome learningOutcome = learningOutcomeOpt.get();
+            // Verify that the learning outcome belongs to the specified course
+            if (!learningOutcome.getCourse().getId().equals(courseId)) {
+                redirectAttributes.addFlashAttribute("error", "Learning outcome does not belong to this course");
+                return "redirect:/syllabus/" + courseId + "/edit";
+            }
+            
+            model.addAttribute("learningOutcome", learningOutcome);
+            model.addAttribute("course", learningOutcome.getCourse());
+            return "syllabus/editLearningOutcome";
+        }
+        
+        redirectAttributes.addFlashAttribute("error", "Learning outcome not found");
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @PostMapping("/{courseId}/learning-outcome/{id}/edit")
+    public String updateLearningOutcome(@PathVariable String courseId, @PathVariable Integer id, 
+                                       @ModelAttribute LearningOutcome learningOutcome,
+                                       RedirectAttributes redirectAttributes) {
+        Optional<LearningOutcome> existingOutcomeOpt = learningOutcomeService.getLearningOutcomeById(id);
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        
+        if (existingOutcomeOpt.isPresent() && courseOpt.isPresent()) {
+            LearningOutcome existingOutcome = existingOutcomeOpt.get();
+            // Verify that the learning outcome belongs to the specified course
+            if (!existingOutcome.getCourse().getId().equals(courseId)) {
+                redirectAttributes.addFlashAttribute("error", "Learning outcome does not belong to this course");
+                return "redirect:/syllabus/" + courseId + "/edit";
+            }
+            
+            // Update only the fields that can be edited, preserving the course and ID
+            existingOutcome.setDescription(learningOutcome.getDescription());
+            existingOutcome.setDescriptionVn(learningOutcome.getDescriptionVn());
+            
+            learningOutcomeService.saveLearningOutcome(existingOutcome);
+            redirectAttributes.addFlashAttribute("success", "Learning outcome updated successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Learning outcome or course not found");
+        }
+        
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @GetMapping("/{courseId}/learning-outcome/{id}/delete")
+    public String deleteLearningOutcome(@PathVariable String courseId, @PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        Optional<LearningOutcome> learningOutcomeOpt = learningOutcomeService.getLearningOutcomeById(id);
+        
+        if (learningOutcomeOpt.isPresent()) {
+            LearningOutcome learningOutcome = learningOutcomeOpt.get();
+            // Verify that the learning outcome belongs to the specified course
+            if (!learningOutcome.getCourse().getId().equals(courseId)) {
+                redirectAttributes.addFlashAttribute("error", "Learning outcome does not belong to this course");
+                return "redirect:/syllabus/" + courseId + "/edit";
+            }
+            
+            learningOutcomeService.deleteLearningOutcome(id);
+            redirectAttributes.addFlashAttribute("success", "Learning outcome deleted successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Learning outcome not found");
+        }
+        
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @GetMapping("/{courseId}/assessment/{id}/edit")
+    public String showEditAssessmentForm(@PathVariable String courseId, @PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Assessment> assessmentOpt = assessmentService.getAssessmentById(id);
+        
+        if (assessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Assessment with ID " + id + " not found. It may have been deleted.");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        
+        if (courseOpt.isPresent()) {
+            Course course = courseOpt.get();
+            
+            // Find the course assessment
+            List<CourseAssessment> courseAssessments = courseAssessmentService.getCourseAssessmentsByCourse(courseId);
+            Optional<CourseAssessment> courseAssessmentOpt = courseAssessments.stream()
+                .filter(ca -> ca.getAssessment().getId().equals(id))
+                .findFirst();
+            
+            if (courseAssessmentOpt.isPresent()) {
+                CourseAssessment courseAssessment = courseAssessmentOpt.get();
+                model.addAttribute("courseAssessment", courseAssessment);
+                model.addAttribute("course", course);
+                model.addAttribute("allAssessments", assessmentService.getAllAssessments());
+                return "syllabus/editAssessment";
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Course assessment not found");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+        }
+        
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @PostMapping("/{courseId}/assessment/{id}/edit")
+    public String updateAssessment(@PathVariable String courseId, @PathVariable Integer id, 
+                                  @RequestParam Integer assessmentId,
+                                  @RequestParam Integer percentage,
+                                  RedirectAttributes redirectAttributes) {
+        Optional<Assessment> originalAssessmentOpt = assessmentService.getAssessmentById(id);
+        if (originalAssessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Original assessment with ID " + id + " not found. It may have been deleted.");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<Assessment> newAssessmentOpt = assessmentService.getAssessmentById(assessmentId);
+        if (newAssessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Selected assessment with ID " + assessmentId + " not found. It may have been deleted.");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        if (courseOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Course course = courseOpt.get();
+        Assessment newAssessment = newAssessmentOpt.get();
+        
+        // Find the course assessment
+        List<CourseAssessment> courseAssessments = courseAssessmentService.getCourseAssessmentsByCourse(courseId);
+        Optional<CourseAssessment> courseAssessmentOpt = courseAssessments.stream()
+            .filter(ca -> ca.getAssessment().getId().equals(id))
+            .findFirst();
+        
+        if (courseAssessmentOpt.isPresent()) {
+            CourseAssessment courseAssessment = courseAssessmentOpt.get();
+            
+            // If assessment type changed, need to delete old one and create new one
+            if (!id.equals(assessmentId)) {
+                // Delete old assessment
+                CourseAssessmentId courseAssessmentId = new CourseAssessmentId(id, courseId);
+                courseAssessmentService.deleteCourseAssessment(courseAssessmentId);
+                
+                // Create new one
+                CourseAssessment newCourseAssessment = new CourseAssessment();
+                newCourseAssessment.setCourse(course);
+                newCourseAssessment.setAssessment(newAssessment);
+                newCourseAssessment.setPercentage(percentage);
+                courseAssessmentService.saveCourseAssessment(newCourseAssessment);
+            } else {
+                // Just update percentage
+                courseAssessment.setPercentage(percentage);
+                courseAssessmentService.saveCourseAssessment(courseAssessment);
+            }
+            
+            redirectAttributes.addFlashAttribute("success", "Assessment updated successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Course assessment not found");
+        }
+        
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @GetMapping("/{courseId}/assessment/{id}/delete")
+    public String deleteAssessment(@PathVariable String courseId, @PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        Optional<Assessment> assessmentOpt = assessmentService.getAssessmentById(id);
+        if (assessmentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Assessment with ID " + id + " not found. It may have been deleted already.");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        Optional<Course> courseOpt = courseService.getCourseById(courseId);
+        if (courseOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/syllabus/" + courseId + "/edit";
+        }
+        
+        // Find the course assessment
+        List<CourseAssessment> courseAssessments = courseAssessmentService.getCourseAssessmentsByCourse(courseId);
+        Optional<CourseAssessment> courseAssessmentOpt = courseAssessments.stream()
+            .filter(ca -> ca.getAssessment().getId().equals(id))
+            .findFirst();
+        
+        if (courseAssessmentOpt.isPresent()) {
+            CourseAssessment courseAssessment = courseAssessmentOpt.get();
+            CourseAssessmentId courseAssessmentId = new CourseAssessmentId(id, courseId);
+            courseAssessmentService.deleteCourseAssessment(courseAssessmentId);
+            redirectAttributes.addFlashAttribute("success", "Assessment deleted successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Course assessment not found");
         }
         
         return "redirect:/syllabus/" + courseId + "/edit";

@@ -2,6 +2,7 @@
 package com.university.syllabus.controller;
 
 import com.university.syllabus.config.AppConfig;
+import com.university.syllabus.service.BookService;
 import com.university.syllabus.service.CourseService;
 import com.university.syllabus.service.InstructorService;
 import com.university.syllabus.service.ProgramService;
@@ -19,6 +20,7 @@ public class HomeController {
     private final InstructorService instructorService;
     private final ProgramService programService;
     private final ClassSessionService classSessionService;
+    private final BookService bookService;
     private final AppConfig appConfig;
     
     @GetMapping("/")
@@ -27,6 +29,7 @@ public class HomeController {
         long courseCount = courseService.getAllCourses().size();
         long instructorCount = instructorService.getAllInstructors().size();
         long programCount = programService.getAllPrograms().size();
+        long bookCount = bookService.getAllBooks().size();
         
         // Get current academic year
         String currentAcademicYear = appConfig.getAcademicYears().getCurrent();
@@ -34,6 +37,7 @@ public class HomeController {
         model.addAttribute("courseCount", courseCount);
         model.addAttribute("instructorCount", instructorCount);
         model.addAttribute("programCount", programCount);
+        model.addAttribute("bookCount", bookCount);
         model.addAttribute("currentAcademicYear", currentAcademicYear);
         model.addAttribute("appName", appConfig.getName());
         model.addAttribute("appVersion", appConfig.getVersion());

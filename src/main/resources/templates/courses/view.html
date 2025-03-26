@@ -142,6 +142,21 @@
         </div>
     </div>
     
+    <!-- Course Books -->
+    <div class="container mt-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">Course Books</h5>
+            </div>
+            <div class="card-body">
+                <p>Manage textbooks, reference materials, and supplementary reading for this course.</p>
+                <a th:href="@{/courses/{id}/books(id=${course.id})}" class="btn btn-primary">
+                    <i class="bi bi-book"></i> Manage Books
+                </a>
+            </div>
+        </div>
+    </div>
+    
     <!-- Footer -->
     <footer th:replace="~{fragments/footer :: footer}"></footer>
     

@@ -67,6 +67,17 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="card mb-4 dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-book dashboard-icon mb-3"></i>
+                        <h3 class="card-title" th:text="${bookCount != null ? bookCount : '0'}">0</h3>
+                        <h5>Books</h5>
+                        <p class="card-text">Browse and manage textbooks and reference materials.</p>
+                        <a th:href="@{/books}" class="btn btn-outline-primary">View Books</a>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Current Academic Year -->
@@ -89,6 +100,9 @@
                         </a>
                         <a th:href="@{/programs/new}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-plus-circle"></i> New Program
+                        </a>
+                        <a th:href="@{/books/new}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus-circle"></i> New Book
                         </a>
                         <a th:href="@{/class-sessions}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-calendar3"></i> Class Sessions

@@ -1,1 +1,62 @@
- 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Books</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Books</h2>
+            <a href="/books/new" class="btn btn-primary">Add New Book</a>
+        </div>
+        
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <span th:text="${success}"></span>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(books)}" class="alert alert-info">
+            No books available.
+        </div>
+        
+        <div th:unless="${#lists.isEmpty(books)}">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Publisher</th>
+                        <th>Year</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="book : ${books}">
+                        <td th:text="${book.title}"></td>
+                        <td th:text="${book.author}"></td>
+                        <td th:text="${book.isbn}"></td>
+                        <td th:text="${book.publisher}"></td>
+                        <td th:text="${book.year}"></td>
+                        <td>
+                            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-sm btn-info">View</a>
+                            <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-sm btn-warning">Edit</a>
+                            <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-3">
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html> 

@@ -62,6 +62,10 @@ public class Course {
     @ToString.Exclude
     private Set<Instructor> instructors = new HashSet<>();
     
+    @OneToMany(mappedBy = "course")
+    @ToString.Exclude
+    private Set<CourseBook> courseBooks = new HashSet<>();
+    
     public Integer getTotalCredits() {
         int theory = creditTheory != null ? creditTheory : 0;
         int lab = creditLab != null ? creditLab : 0;

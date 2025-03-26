@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/courses")
@@ -52,6 +53,11 @@ public class CourseController {
         model.addAttribute("course", course);
         model.addAttribute("learningOutcomes", learningOutcomes);
         return "courses/view";
+    }
+    
+    @GetMapping("/{id}/books")
+    public String viewCourseBooks(@PathVariable String id, Model model) {
+        return "redirect:/course-books/course/" + id;
     }
     
     @GetMapping("/new")
