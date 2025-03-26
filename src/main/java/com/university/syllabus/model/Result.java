@@ -19,8 +19,8 @@ public class Result {
     private Student student;
     
     @Id
-    @ManyToOne
-    @JoinColumn(name = "class_id")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id", nullable = true, foreignKey = @ForeignKey(name = "FK_Result_ClassSession"))
     private ClassSession classSession;
     
     @Column(name = "mid_score")

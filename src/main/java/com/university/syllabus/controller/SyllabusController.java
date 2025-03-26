@@ -1,6 +1,7 @@
 // SyllabusController.java
 package com.university.syllabus.controller;
 
+import com.university.syllabus.dto.CourseBookDTO;
 import com.university.syllabus.model.*;
 import com.university.syllabus.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,17 @@ public class SyllabusController {
     @Autowired
     private AsiinCLOService asiinCLOService;
     
+    @Autowired
+    private CourseBookService courseBookService;
+    
+    @Autowired
+    private BookService bookService;
+    
+    @ModelAttribute("bookService")
+    public BookService getBookService() {
+        return bookService;
+    }
+    
     @GetMapping("/{courseId}")
     public String viewSyllabus(@PathVariable String courseId, Model model) {
         Optional<Course> courseOpt = courseService.getCourseById(courseId);
@@ -53,12 +65,23 @@ public class SyllabusController {
                 .filter(tool -> tool != null && tool.getAssessment() != null)
                 .toList();
             
+            // Get ASIIN CLOs filtered by course ID
+            List<AsiinCLO> allAsiinClos = asiinCLOService.getAllAsiinCLOs();
+            List<AsiinCLO> filteredAsiinClos = allAsiinClos.stream()
+                .filter(clo -> clo.getId().startsWith(courseId + "_"))
+                .toList();
+            
+            // Get course books
+            List<CourseBookDTO> courseBooks = courseBookService.getBooksForCourse(courseId);
+            
             model.addAttribute("course", course);
             model.addAttribute("learningOutcomes", learningOutcomes);
             model.addAttribute("courseAssessments", courseAssessments);
             // Assessment Tool feature disabled
             // model.addAttribute("assessmentTools", assessmentTools);
             model.addAttribute("asiinAssessmentTools", asiinAssessmentTools);
+            model.addAttribute("asiinClos", filteredAsiinClos);
+            model.addAttribute("courseBooks", courseBooks);
             
             return "syllabus/view";
         }
@@ -80,7 +103,15 @@ public class SyllabusController {
             asiinAssessmentTools = asiinAssessmentTools.stream()
                 .filter(tool -> tool != null && tool.getAssessment() != null)
                 .toList();
-            List<AsiinCLO> asiinCLOs = asiinCLOService.getAllAsiinCLOs();
+                
+            // Get ASIIN CLOs filtered by course ID
+            List<AsiinCLO> allAsiinCLOs = asiinCLOService.getAllAsiinCLOs();
+            List<AsiinCLO> filteredAsiinCLOs = allAsiinCLOs.stream()
+                .filter(clo -> clo.getId().startsWith(courseId + "_"))
+                .toList();
+            
+            // Get course books and all available books
+            List<CourseBookDTO> courseBooks = courseBookService.getBooksForCourse(courseId);
             
             model.addAttribute("course", course);
             model.addAttribute("learningOutcomes", learningOutcomes);
@@ -89,7 +120,9 @@ public class SyllabusController {
             // Assessment Tool feature disabled
             // model.addAttribute("assessmentTools", assessmentTools);
             model.addAttribute("asiinAssessmentTools", asiinAssessmentTools);
-            model.addAttribute("asiinCLOs", asiinCLOs);
+            model.addAttribute("asiinCLOs", filteredAsiinCLOs);
+            model.addAttribute("courseBooks", courseBooks);
+            model.addAttribute("bookService", bookService);
             
             model.addAttribute("newLearningOutcome", new LearningOutcome());
             
@@ -159,12 +192,24 @@ public class SyllabusController {
                 .filter(tool -> tool != null && tool.getAssessment() != null)
                 .toList();
             
+            // Get ASIIN CLOs filtered by course ID
+            List<AsiinCLO> allAsiinClos = asiinCLOService.getAllAsiinCLOs();
+            List<AsiinCLO> filteredAsiinClos = allAsiinClos.stream()
+                .filter(clo -> clo.getId().startsWith(courseId + "_"))
+                .toList();
+            
+            // Get course books
+            List<CourseBookDTO> courseBooks = courseBookService.getBooksForCourse(courseId);
+            
             model.addAttribute("course", course);
             model.addAttribute("learningOutcomes", learningOutcomes);
             model.addAttribute("courseAssessments", courseAssessments);
             // Assessment Tool feature disabled
             // model.addAttribute("assessmentTools", assessmentTools);
             model.addAttribute("asiinAssessmentTools", asiinAssessmentTools);
+            model.addAttribute("asiinClos", filteredAsiinClos);
+            model.addAttribute("courseBooks", courseBooks);
+            model.addAttribute("exportDate", java.time.LocalDateTime.now());
             
             return "syllabus/export";
         }
@@ -683,6 +728,47 @@ public class SyllabusController {
             redirectAttributes.addFlashAttribute("error", "Course assessment not found");
         }
         
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @PostMapping("/{courseId}/book")
+    public String addBookToCourse(@PathVariable String courseId, 
+                                @RequestParam Long bookId,
+                                @RequestParam String type,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            bookService.addBookToCourse(bookId, courseId, type);
+            redirectAttributes.addFlashAttribute("success", "Book added to syllabus successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error adding book to syllabus: " + e.getMessage());
+        }
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @PostMapping("/{courseId}/book/{bookId}/remove")
+    public String removeBookFromCourse(@PathVariable String courseId,
+                                    @PathVariable Long bookId,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            bookService.removeBookFromCourse(bookId, courseId);
+            redirectAttributes.addFlashAttribute("success", "Book removed from syllabus successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error removing book from syllabus: " + e.getMessage());
+        }
+        return "redirect:/syllabus/" + courseId + "/edit";
+    }
+    
+    @PostMapping("/{courseId}/book/{bookId}/update")
+    public String updateBookType(@PathVariable String courseId,
+                               @PathVariable Long bookId,
+                               @RequestParam String type,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            bookService.updateBookCourseRelation(bookId, courseId, type);
+            redirectAttributes.addFlashAttribute("success", "Book type updated successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error updating book type: " + e.getMessage());
+        }
         return "redirect:/syllabus/" + courseId + "/edit";
     }
 }
