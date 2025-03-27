@@ -12,7 +12,7 @@
             <span th:text="${error}"></span>
         </div>
 
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title" th:text="${book.title}"></h5>
                 <p class="card-text">
@@ -21,6 +21,39 @@
                     <strong>Publisher:</strong> <span th:text="${book.publisher}"></span><br>
                     <strong>Year:</strong> <span th:text="${book.year}"></span>
                 </p>
+            </div>
+        </div>
+        
+        <!-- Associated Courses -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Associated Courses</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(book.courses)}" class="alert alert-info">
+                    This book is not associated with any courses.
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(book.courses)}">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Course ID</th>
+                                <th>Course Name</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="course : ${book.courses}">
+                                <td th:text="${course.courseId}"></td>
+                                <td th:text="${course.courseName}"></td>
+                                <td th:text="${course.type}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <a th:href="@{/books/{id}/courses(id=${book.id})}" class="btn btn-primary">Manage Courses</a>
             </div>
         </div>
 

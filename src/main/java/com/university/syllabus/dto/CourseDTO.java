@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,9 @@ public class CourseDTO {
     private String description;
     private Integer courseLevelId;
     private String courseLevelName;
+    
+    // Books associated with this course
+    private List<CourseBookDTO> books = new ArrayList<>();
     
     // Static method to convert Entity to DTO
     public static CourseDTO fromEntity(Course course) {

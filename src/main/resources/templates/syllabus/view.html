@@ -68,31 +68,24 @@
             </div>
         </div>
         
-        <!-- Learning Outcomes -->
+        <!-- Course Learning Outcomes -->
         <div class="card mb-4">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">Learning Outcomes</h5>
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Course Learning Outcomes (CLOs)</h5>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/syllabus/{courseId}/edit(courseId=${course.id})}" th:onclick="'sessionStorage.setItem(\'scrollTo\', \'clos-section\');'" class="btn btn-sm btn-light">
+                        <i class="bi bi-pencil"></i> Manage CLOs
+                    </a>
+                </div>
             </div>
             <div class="card-body">
-                <div th:if="${learningOutcomes.isEmpty()}" class="alert alert-info">
+                <div th:if="${asiinClos == null || asiinClos.isEmpty()}" class="alert alert-info">
                     No learning outcomes available for this course.
                 </div>
-                <div th:unless="${learningOutcomes.isEmpty()}">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th width="10%">ID</th>
-                                    <th width="90%">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="outcome : ${learningOutcomes}">
-                                    <td th:text="${outcome.id}">1</td>
-                                    <td th:text="${outcome.description}">Students will be able to understand...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div th:unless="${asiinClos == null || asiinClos.isEmpty()}">
+                    <div th:each="clo : ${asiinClos}" class="learning-outcome">
+                        <strong th:text="${#strings.substringAfter(clo.id, '_')}">CLO-1</strong>
+                        <span th:text="${clo.description}">Students will be able to understand...</span>
                     </div>
                 </div>
             </div>
@@ -100,8 +93,13 @@
         
         <!-- Assessment Methods -->
         <div class="card mb-4">
-            <div class="card-header bg-info text-white">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Assessment Methods</h5>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/syllabus/{courseId}/edit(courseId=${course.id})}" th:onclick="'sessionStorage.setItem(\'scrollTo\', \'assessment-methods\');'" class="btn btn-sm btn-light">
+                        <i class="bi bi-pencil"></i> Manage Assessments
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <div th:if="${courseAssessments.isEmpty()}" class="alert alert-info">
@@ -109,7 +107,7 @@
                 </div>
                 <div th:unless="${courseAssessments.isEmpty()}">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Assessment Type</th>
@@ -167,6 +165,51 @@
         </div>
         -->
         
+        <!-- Course Books -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Course Books</h5>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/syllabus/{courseId}/edit(courseId=${course.id})}" th:onclick="'sessionStorage.setItem(\'scrollTo\', \'books-section\');'" class="btn btn-sm btn-light">
+                        <i class="bi bi-pencil"></i> Manage Books
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div th:if="${courseBooks.isEmpty()}" class="alert alert-info">
+                    No books defined for this course.
+                </div>
+                <div th:unless="${courseBooks.isEmpty()}">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Type</th>
+                                    <th>ISBN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="book : ${courseBooks}">
+                                    <td th:text="${book.bookTitle}">Introduction to Programming</td>
+                                    <td th:text="${book.bookAuthor}">John Doe</td>
+                                    <td>
+                                        <span class="badge" th:classappend="${
+                                            book.type == 'TEXTBOOK' ? 'bg-primary' : 
+                                            book.type == 'REFERENCE' ? 'bg-success' : 
+                                            'bg-info'}" 
+                                            th:text="${book.type}">Textbook</span>
+                                    </td>
+                                    <td th:text="${book.bookIsbn}">978-1234567890</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- ASIIN Assessment Tools -->
         <div class="card mb-4">
             <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
@@ -195,7 +238,7 @@
                             </thead>
                             <tbody>
                                 <tr th:each="tool : ${asiinAssessmentTools}">
-                                    <td th:text="${tool.cloId}">CLO-1</td>
+                                    <td th:text="${#strings.substringAfter(tool.cloId, '_')}">CLO-1</td>
                                     <td th:text="${tool.clo != null ? tool.clo.description : 'N/A'}">Description</td>
                                     <td>
                                         <span class="badge rounded-pill bg-info" th:text="${tool.assessment != null ? tool.assessment.type : 'N/A'}">Quiz</span>
