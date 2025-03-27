@@ -6,6 +6,9 @@ import com.university.syllabus.model.Book;
 import com.university.syllabus.repository.BookRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +38,31 @@ public class BookService {
         });
         
         return books;
+    }
+
+    public Page<BookDTO> getAllBooks(PageRequest pageRequest, String courseId, Integer year) {
+        Page<Book> bookPage;
+        if (courseId != null && !courseId.isEmpty() && year != null) {
+            bookPage = bookRepository.findByCourseBooksCourseIdAndYear(courseId, year, pageRequest);
+        } else if (courseId != null && !courseId.isEmpty()) {
+            bookPage = bookRepository.findByCourseBooksCourseId(courseId, pageRequest);
+        } else if (year != null) {
+            bookPage = bookRepository.findByYear(year, pageRequest);
+        } else {
+            bookPage = bookRepository.findAll(pageRequest);
+        }
+
+        List<BookDTO> bookDTOs = bookPage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        // Enhance DTOs with course information
+        bookDTOs.forEach(book -> {
+            List<CourseBookDTO> courses = courseBookService.getCoursesForBook(book.getId());
+            book.setCourses(courses);
+        });
+        
+        return new PageImpl<>(bookDTOs, pageRequest, bookPage.getTotalElements());
     }
 
     public Optional<BookDTO> getBookById(Long id) {

@@ -4,6 +4,8 @@ import com.university.syllabus.dto.BookDTO;
 import com.university.syllabus.service.BookService;
 import com.university.syllabus.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,36 @@ public class BookController {
     }
 
     @GetMapping
-    public String listBooks(Model model) {
-        model.addAttribute("books", bookService.getAllBooks());
+    public String listBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(required = false) String courseId,
+            @RequestParam(required = false) Integer year,
+            Model model) {
+        // Define available page sizes
+        int[] pageSizes = {10, 25, 50, 100};
+        model.addAttribute("pageSizes", pageSizes);
+        
+        // Get all courses for filter dropdown
+        model.addAttribute("courses", courseService.getAllCourses());
+        
+        // Add filter values to model
+        model.addAttribute("selectedCourseId", courseId);
+        model.addAttribute("selectedYear", year);
+        
+        Page<BookDTO> bookPage = bookService.getAllBooks(PageRequest.of(page, size), courseId, year);
+        model.addAttribute("books", bookPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookPage.getTotalPages());
+        model.addAttribute("totalItems", bookPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+        
+        // Calculate start and end indices
+        long startIndex = page * size + 1;
+        long endIndex = Math.min((page + 1) * size, bookPage.getTotalElements());
+        model.addAttribute("startIndex", startIndex);
+        model.addAttribute("endIndex", endIndex);
+        
         return "book/list";
     }
 
