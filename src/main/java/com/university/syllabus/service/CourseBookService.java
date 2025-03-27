@@ -8,7 +8,6 @@ import com.university.syllabus.model.CourseBookId;
 import com.university.syllabus.repository.BookRepository;
 import com.university.syllabus.repository.CourseBookRepository;
 import com.university.syllabus.repository.CourseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ public class CourseBookService {
     private final BookRepository bookRepository;
     private final CourseRepository courseRepository;
     
-    @Autowired
     public CourseBookService(CourseBookRepository courseBookRepository, 
                             BookRepository bookRepository, 
                             CourseRepository courseRepository) {

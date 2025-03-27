@@ -114,9 +114,6 @@ public class ProgramController {
     
     @GetMapping("/{id}/delete")
     public String deleteProgram(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        Program program = programService.getProgramById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Program", "id", id));
-        
         // Check if program has any courses assigned
         List<CoursePathway> coursePathways = coursePathwayService.getCoursePathwaysByProgram(id);
         if (!coursePathways.isEmpty()) {

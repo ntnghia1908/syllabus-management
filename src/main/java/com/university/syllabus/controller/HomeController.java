@@ -6,7 +6,6 @@ import com.university.syllabus.service.BookService;
 import com.university.syllabus.service.CourseService;
 import com.university.syllabus.service.InstructorService;
 import com.university.syllabus.service.ProgramService;
-import com.university.syllabus.service.ClassSessionService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ public class HomeController {
     private final CourseService courseService;
     private final InstructorService instructorService;
     private final ProgramService programService;
-    private final ClassSessionService classSessionService;
     private final BookService bookService;
     private final AppConfig appConfig;
     

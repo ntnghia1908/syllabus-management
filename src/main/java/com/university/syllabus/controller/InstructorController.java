@@ -83,8 +83,6 @@ public class InstructorController {
     
     @GetMapping("/{id}/delete")
     public String deleteInstructor(@PathVariable String id, RedirectAttributes redirectAttributes) {
-        Instructor instructor = instructorService.getInstructorById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Instructor", "id", id));
         
         // Check if instructor has any class sessions assigned
         List<ClassSession> classSessions = classSessionService.getClassSessionsByInstructor(id);

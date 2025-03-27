@@ -4,12 +4,16 @@ package com.university.syllabus.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import lombok.NonNull;
+
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
+    @NonNull
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/access-denied").setViewName("error/access-denied");

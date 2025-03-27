@@ -4,7 +4,6 @@ import com.university.syllabus.dto.CourseBookDTO;
 import com.university.syllabus.service.BookService;
 import com.university.syllabus.service.CourseBookService;
 import com.university.syllabus.service.CourseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ public class CourseBookController {
     private final BookService bookService;
     private final CourseService courseService;
     
-    @Autowired
     public CourseBookController(CourseBookService courseBookService, 
                               BookService bookService,
                               CourseService courseService) {

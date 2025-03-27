@@ -5,7 +5,6 @@ import com.university.syllabus.dto.CourseBookDTO;
 import com.university.syllabus.model.Book;
 import com.university.syllabus.repository.BookRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageImpl;
@@ -20,7 +19,6 @@ public class BookService {
     private final BookRepository bookRepository;
     private final CourseBookService courseBookService;
 
-    @Autowired
     public BookService(BookRepository bookRepository, CourseBookService courseBookService) {
         this.bookRepository = bookRepository;
         this.courseBookService = courseBookService;

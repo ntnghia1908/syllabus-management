@@ -720,7 +720,6 @@ public class SyllabusController {
             .findFirst();
         
         if (courseAssessmentOpt.isPresent()) {
-            CourseAssessment courseAssessment = courseAssessmentOpt.get();
             CourseAssessmentId courseAssessmentId = new CourseAssessmentId(id, courseId);
             courseAssessmentService.deleteCourseAssessment(courseAssessmentId);
             redirectAttributes.addFlashAttribute("success", "Assessment deleted successfully");

@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/courses")
@@ -105,9 +104,6 @@ public class CourseController {
     
     @GetMapping("/{id}/delete")
     public String deleteCourse(@PathVariable String id, RedirectAttributes redirectAttributes) {
-        Course course = courseService.getCourseById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
-        
         // You might want to add additional checks here, e.g., if the course is used in any program
         
         courseService.deleteCourse(id);
