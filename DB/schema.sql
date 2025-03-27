@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `digit-curriculum` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `digit-curriculum`;
 -- MySQL dump 10.13  Distrib 8.0.26, for Win64 (x86_64)
 --
--- Host: localhost    Database: digit
+-- Host: localhost    Database: digit-curriculum
 -- ------------------------------------------------------
 -- Server version	8.0.26
 
@@ -14,6 +16,24 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `account`
+--
+
+DROP TABLE IF EXISTS `account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `account` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `instructor_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK9nkqtsydmph5nrsd3sn1f4w29` (`instructor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asiin_assessment_tool`
@@ -271,8 +291,8 @@ CREATE TABLE `course` (
   `course_level_id` int NOT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `name_vn` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `credit_theory` int DEFAULT NULL,
-  `credit_lab` int DEFAULT NULL,
+  `credit_theory` varchar(255) DEFAULT NULL,
+  `credit_lab` varchar(255) DEFAULT NULL,
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_Course_CourseLevel` (`course_level_id`)
@@ -368,6 +388,19 @@ CREATE TABLE `course_department` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary view structure for view `course_in_which_semester_ds21`
+--
+
+DROP TABLE IF EXISTS `course_in_which_semester_ds21`;
+/*!50001 DROP VIEW IF EXISTS `course_in_which_semester_ds21`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `course_in_which_semester_ds21` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `Semester`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `course_instructor`
 --
 
@@ -397,6 +430,32 @@ CREATE TABLE `course_level` (
   CONSTRAINT `fk_course_level_course` FOREIGN KEY (`id`) REFERENCES `course` (`course_level_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `course_list_cs_19`
+--
+
+DROP TABLE IF EXISTS `course_list_cs_19`;
+/*!50001 DROP VIEW IF EXISTS `course_list_cs_19`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `course_list_cs_19` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `course_name`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `course_list_ds`
+--
+
+DROP TABLE IF EXISTS `course_list_ds`;
+/*!50001 DROP VIEW IF EXISTS `course_list_ds`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `course_list_ds` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `course_name`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `course_pathway`
@@ -469,6 +528,19 @@ CREATE TABLE `course_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `course_type_ds_19_20`
+--
+
+DROP TABLE IF EXISTS `course_type_ds_19_20`;
+/*!50001 DROP VIEW IF EXISTS `course_type_ds_19_20`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `course_type_ds_19_20` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `type`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Temporary view structure for view `curriculum_4years_template`
@@ -547,99 +619,6 @@ DROP TABLE IF EXISTS `curriculum_cs_ae1_8semesters`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `curriculum_cs_ae1_8semesters` AS SELECT 
- 1 AS `Semester`,
- 1 AS `course_code`,
- 1 AS `Course Name`,
- 1 AS `Credits`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `curriculum_ds_ae1_4years`
---
-
-DROP TABLE IF EXISTS `curriculum_ds_ae1_4years`;
-/*!50001 DROP VIEW IF EXISTS `curriculum_ds_ae1_4years`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `curriculum_ds_ae1_4years` AS SELECT 
- 1 AS `course_code`,
- 1 AS `Course Name`,
- 1 AS `Program`,
- 1 AS `year`,
- 1 AS `semester`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `curriculum_ds_ae1_8semesters`
---
-
-DROP TABLE IF EXISTS `curriculum_ds_ae1_8semesters`;
-/*!50001 DROP VIEW IF EXISTS `curriculum_ds_ae1_8semesters`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `curriculum_ds_ae1_8semesters` AS SELECT 
- 1 AS `Semester`,
- 1 AS `course_code`,
- 1 AS `Course Name`,
- 1 AS `Credits`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `curriculum_itce_ae1_4years`
---
-
-DROP TABLE IF EXISTS `curriculum_itce_ae1_4years`;
-/*!50001 DROP VIEW IF EXISTS `curriculum_itce_ae1_4years`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `curriculum_itce_ae1_4years` AS SELECT 
- 1 AS `course_code`,
- 1 AS `Course Name`,
- 1 AS `Program`,
- 1 AS `year`,
- 1 AS `semester`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `curriculum_itce_ae1_8semesters`
---
-
-DROP TABLE IF EXISTS `curriculum_itce_ae1_8semesters`;
-/*!50001 DROP VIEW IF EXISTS `curriculum_itce_ae1_8semesters`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `curriculum_itce_ae1_8semesters` AS SELECT 
- 1 AS `Semester`,
- 1 AS `course_code`,
- 1 AS `Course Name`,
- 1 AS `Credits`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `curriculum_itne_ae1_4years`
---
-
-DROP TABLE IF EXISTS `curriculum_itne_ae1_4years`;
-/*!50001 DROP VIEW IF EXISTS `curriculum_itne_ae1_4years`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `curriculum_itne_ae1_4years` AS SELECT 
- 1 AS `course_code`,
- 1 AS `Course Name`,
- 1 AS `Program`,
- 1 AS `year`,
- 1 AS `semester`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `curriculum_itne_ae1_8semesters`
---
-
-DROP TABLE IF EXISTS `curriculum_itne_ae1_8semesters`;
-/*!50001 DROP VIEW IF EXISTS `curriculum_itne_ae1_8semesters`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `curriculum_itne_ae1_8semesters` AS SELECT 
  1 AS `Semester`,
  1 AS `course_code`,
  1 AS `Course Name`,
@@ -742,6 +721,20 @@ CREATE TABLE `learning_outcome` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary view structure for view `lecturer_with_course`
+--
+
+DROP TABLE IF EXISTS `lecturer_with_course`;
+/*!50001 DROP VIEW IF EXISTS `lecturer_with_course`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `lecturer_with_course` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `Lecturer`,
+ 1 AS `email`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `major`
 --
 
@@ -757,21 +750,6 @@ CREATE TABLE `major` (
   KEY `FK_major_discipline` (`discipline_id`),
   CONSTRAINT `FK_major_discipline` FOREIGN KEY (`discipline_id`) REFERENCES `discipline` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `migrations`
---
-
-DROP TABLE IF EXISTS `migrations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `migrations` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -798,7 +776,7 @@ DROP TABLE IF EXISTS `program`;
 CREATE TABLE `program` (
   `id` int NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `duration` int DEFAULT NULL,
+  `duration` varchar(255) DEFAULT NULL,
   `version` varchar(4) DEFAULT NULL,
   `major_id` int DEFAULT NULL,
   `program_type_id` int NOT NULL,
@@ -846,6 +824,19 @@ CREATE TABLE `program_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary view structure for view `reading_list`
+--
+
+DROP TABLE IF EXISTS `reading_list`;
+/*!50001 DROP VIEW IF EXISTS `reading_list`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `reading_list` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `books`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `result`
 --
 
@@ -869,6 +860,26 @@ CREATE TABLE `result` (
   `avg` float DEFAULT NULL,
   PRIMARY KEY (`student_id`,`class_id`),
   CONSTRAINT `FK_Student_Result` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `results_temp`
+--
+
+DROP TABLE IF EXISTS `results_temp`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `results_temp` (
+  `class_id` text,
+  `course_id` text,
+  `group_id` int DEFAULT NULL,
+  `sem` int DEFAULT NULL,
+  `year` text,
+  `student_id` text,
+  `assignment` int DEFAULT NULL,
+  `mid` int DEFAULT NULL,
+  `final` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -904,6 +915,22 @@ CREATE TABLE `student` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `student_course`
+--
+
+DROP TABLE IF EXISTS `student_course`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `student_course` (
+  `StudentID` bigint NOT NULL,
+  `CourseID` bigint NOT NULL,
+  PRIMARY KEY (`StudentID`,`CourseID`),
+  KEY `StudentCourse_StudentID_INDEX` (`StudentID`),
+  KEY `StudentCourse_CourseID_INDEX` (`CourseID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Temporary view structure for view `syllabus_generater`
 --
 
@@ -923,6 +950,19 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `Intructor Name`,
  1 AS `Department`,
  1 AS `Email`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `teaching_methods_ds21`
+--
+
+DROP TABLE IF EXISTS `teaching_methods_ds21`;
+/*!50001 DROP VIEW IF EXISTS `teaching_methods_ds21`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `teaching_methods_ds21` AS SELECT 
+ 1 AS `course_id`,
+ 1 AS `teaching_methods`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1006,30 +1046,76 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary view structure for view `total_credits_by_semester_itce`
+-- Final view structure for view `course_in_which_semester_ds21`
 --
 
-DROP TABLE IF EXISTS `total_credits_by_semester_itce`;
-/*!50001 DROP VIEW IF EXISTS `total_credits_by_semester_itce`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `total_credits_by_semester_itce` AS SELECT 
- 1 AS `Semester`,
- 1 AS `Credits`*/;
-SET character_set_client = @saved_cs_client;
+/*!50001 DROP VIEW IF EXISTS `course_in_which_semester_ds21`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `course_in_which_semester_ds21` AS select `plan`.`course_id` AS `course_id`,group_concat(distinct (((`plan`.`year` - 1) * 2) + `plan`.`semester`) separator ',') AS `Semester` from `course_pathway` `plan` where (`plan`.`program_id` = 1) group by `plan`.`course_id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Temporary view structure for view `total_credits_by_semester_itne`
+-- Final view structure for view `course_list_cs_19`
 --
 
-DROP TABLE IF EXISTS `total_credits_by_semester_itne`;
-/*!50001 DROP VIEW IF EXISTS `total_credits_by_semester_itne`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `total_credits_by_semester_itne` AS SELECT 
- 1 AS `Semester`,
- 1 AS `Credits`*/;
-SET character_set_client = @saved_cs_client;
+/*!50001 DROP VIEW IF EXISTS `course_list_cs_19`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `course_list_cs_19` AS select distinct `cp`.`course_id` AS `course_id`,`c`.`name` AS `course_name` from (`course_program` `cp` join `course` `c` on((`cp`.`course_id` = `c`.`id`))) where (`cp`.`program_id` = 4) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `course_list_ds`
+--
+
+/*!50001 DROP VIEW IF EXISTS `course_list_ds`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `course_list_ds` AS select distinct `cp`.`course_id` AS `course_id`,`c`.`name` AS `course_name` from (`course_program` `cp` join `course` `c` on((`cp`.`course_id` = `c`.`id`))) where (`cp`.`program_id` = 1) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `course_type_ds_19_20`
+--
+
+/*!50001 DROP VIEW IF EXISTS `course_type_ds_19_20`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `course_type_ds_19_20` AS select `cp`.`course_id` AS `course_id`,`ct`.`type` AS `type` from (`course_program` `cp` join `course_type` `ct` on((`ct`.`id` = `cp`.`course_type_id`))) where (`cp`.`program_id` = 1) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
 -- Final view structure for view `curriculum_4years_template`
@@ -1122,109 +1208,37 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `curriculum_ds_ae1_4years`
+-- Final view structure for view `lecturer_with_course`
 --
 
-/*!50001 DROP VIEW IF EXISTS `curriculum_ds_ae1_4years`*/;
+/*!50001 DROP VIEW IF EXISTS `lecturer_with_course`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
+/*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_ds_ae1_4years` AS select `cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,`p`.`name` AS `Program`,`plan`.`year` AS `year`,`plan`.`semester` AS `semester` from (((`course` `c` join `course_pathway` `plan` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 1)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
+/*!50001 VIEW `lecturer_with_course` AS select `ci`.`course_id` AS `course_id`,concat(`i`.`name`,', ',`i`.`degree`) AS `Lecturer`,`i`.`email` AS `email` from (`course_instructor` `ci` left join `instructor` `i` on((`ci`.`instructor_id` = `i`.`id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `curriculum_ds_ae1_8semesters`
+-- Final view structure for view `reading_list`
 --
 
-/*!50001 DROP VIEW IF EXISTS `curriculum_ds_ae1_8semesters`*/;
+/*!50001 DROP VIEW IF EXISTS `reading_list`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
+/*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_ds_ae1_8semesters` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`c`.`id` AS `course_code`,`c`.`name` AS `Course Name`,(`c`.`credit_theory` + `c`.`credit_lab`) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 45)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `curriculum_itce_ae1_4years`
---
-
-/*!50001 DROP VIEW IF EXISTS `curriculum_itce_ae1_4years`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_itce_ae1_4years` AS select `cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,`p`.`name` AS `Program`,`plan`.`year` AS `year`,`plan`.`semester` AS `semester` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`) and (`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 2)))) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `curriculum_itce_ae1_8semesters`
---
-
-/*!50001 DROP VIEW IF EXISTS `curriculum_itce_ae1_8semesters`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_itce_ae1_8semesters` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,(`c`.`credit_theory` + `c`.`credit_lab`) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 2)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `curriculum_itne_ae1_4years`
---
-
-/*!50001 DROP VIEW IF EXISTS `curriculum_itne_ae1_4years`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_itne_ae1_4years` AS select `cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,`p`.`name` AS `Program`,`plan`.`year` AS `year`,`plan`.`semester` AS `semester` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`) and (`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 3)))) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `curriculum_itne_ae1_8semesters`
---
-
-/*!50001 DROP VIEW IF EXISTS `curriculum_itne_ae1_8semesters`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_itne_ae1_8semesters` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,(`c`.`credit_theory` + `c`.`credit_lab`) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 3)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
+/*!50001 VIEW `reading_list` AS select `cb`.`course_id` AS `course_id`,group_concat(concat_ws('',`b`.`author`,',',`b`.`title`,',',`b`.`version`,',',`b`.`publisher`,',',`b`.`year`) separator '|') AS `books` from (`course_book` `cb` join `book` `b` on((`cb`.`book_id` = `b`.`id`))) group by `cb`.`course_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1243,6 +1257,24 @@ SET character_set_client = @saved_cs_client;
 /*!50001 CREATE ALGORITHM=TEMPTABLE */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `syllabus_generater` AS select distinct `c`.`id` AS `CourseID`,`c`.`name_vn` AS `Vietnamese`,`c`.`name` AS `English`,`c`.`credit_theory` AS `Lecturer`,`c`.`credit_lab` AS `Laborator`,(`c`.`credit_theory` + `c`.`credit_lab`) AS `totalCredit`,`c`.`description` AS `description`,`ct`.`type` AS `Course Type`,concat(`i`.`name`,', ',`i`.`degree`) AS `Intructor Name`,`d`.`name` AS `Department`,`i`.`email` AS `Email` from ((((((`course` `c` join `course_program` `cp` on((`c`.`id` = `cp`.`course_id`))) join `course_type` `ct` on((`cp`.`course_type_id` = `ct`.`id`))) join `course_department` `cd` on((`cd`.`course_id` = `c`.`id`))) join `department` `d` on((`cd`.`department_id` = `d`.`id`))) join `course_instructor` `ci` on((`ci`.`course_id` = `c`.`id`))) join `instructor` `i` on((`ci`.`instructor_id` = `i`.`id`))) where (`d`.`id` = 1) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `teaching_methods_ds21`
+--
+
+/*!50001 DROP VIEW IF EXISTS `teaching_methods_ds21`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `teaching_methods_ds21` AS select `ca`.`course_id` AS `course_id`,group_concat(`ass`.`type` separator ',') AS `teaching_methods` from (`course_assessment_asiin` `ca` join `assessment` `ass` on((`ass`.`id` = `ca`.`assessment_id`))) where (`ass`.`id` not in (6,4)) group by `ca`.`course_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1282,42 +1314,6 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `total_credits_by_semester_itce`
---
-
-/*!50001 DROP VIEW IF EXISTS `total_credits_by_semester_itce`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `total_credits_by_semester_itce` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,sum((`c`.`credit_theory` + `c`.`credit_lab`)) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 2)) group by (((`plan`.`year` - 1) * 2) + `plan`.`semester`) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `total_credits_by_semester_itne`
---
-
-/*!50001 DROP VIEW IF EXISTS `total_credits_by_semester_itne`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=TEMPTABLE */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `total_credits_by_semester_itne` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,sum((`c`.`credit_theory` + `c`.`credit_lab`)) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 3)) group by (((`plan`.`year` - 1) * 2) + `plan`.`semester`) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1328,4 +1324,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-14 21:49:40
+-- Dump completed on 2025-03-27 21:29:51
