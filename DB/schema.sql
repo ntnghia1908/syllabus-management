@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `digit-curriculum` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `digit-curriculum`;
 -- MySQL dump 10.13  Distrib 8.0.26, for Win64 (x86_64)
 --
 -- Host: localhost    Database: digit-curriculum
@@ -219,8 +217,10 @@ CREATE TABLE `class_session` (
   `semester` int DEFAULT NULL,
   `academic_year` varchar(255) DEFAULT NULL,
   `group_theory` int DEFAULT NULL,
+  `instructor_id` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_classSession_course` (`course_id`),
+  KEY `FK_classSession_instructor_idx` (`instructor_id`),
   CONSTRAINT `FK_classSession_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -859,7 +859,9 @@ CREATE TABLE `result` (
   `abet_6` int DEFAULT NULL,
   `avg` float DEFAULT NULL,
   PRIMARY KEY (`student_id`,`class_id`),
-  CONSTRAINT `FK_Student_Result` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
+  KEY `FK_Result_ClassSession_idx` (`class_id`),
+  CONSTRAINT `FK_Result_ClassSession` FOREIGN KEY (`class_id`) REFERENCES `class_session` (`id`),
+  CONSTRAINT `FK_Result_Student` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -953,6 +955,21 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `teaching_activity`
+--
+
+DROP TABLE IF EXISTS `teaching_activity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `teaching_activity` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Temporary view structure for view `teaching_methods_ds21`
 --
 
@@ -975,8 +992,6 @@ DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(510) DEFAULT NULL,
-  `teaching_activities` varchar(255) NOT NULL,
-  `learning_activities` varchar(255) NOT NULL,
   `topic_type_id` int NOT NULL,
   `course_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`),
@@ -984,6 +999,40 @@ CREATE TABLE `topic` (
   KEY `FK_topic_topic_type` (`topic_type_id`),
   CONSTRAINT `fk_topic_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=942 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `topic_assessment`
+--
+
+DROP TABLE IF EXISTS `topic_assessment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `topic_assessment` (
+  `topic_id` int DEFAULT NULL,
+  `assessment_id` int DEFAULT NULL,
+  KEY `fk_topic_idx` (`topic_id`),
+  KEY `fk_topic_assessment_assessment_idx` (`assessment_id`),
+  CONSTRAINT `fk_topic` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`),
+  CONSTRAINT `fk_topic_assessment_assessment` FOREIGN KEY (`assessment_id`) REFERENCES `assessment` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `topic_book`
+--
+
+DROP TABLE IF EXISTS `topic_book`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `topic_book` (
+  `topic_id` int DEFAULT NULL,
+  `book_id` int DEFAULT NULL,
+  KEY `fk_topicBook_topic_idx` (`topic_id`),
+  KEY `fk_topicBook_book_idx` (`book_id`),
+  CONSTRAINT `fk_topicBook_book` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
+  CONSTRAINT `fk_topicBook_topic` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1002,6 +1051,23 @@ CREATE TABLE `topic_detail` (
   KEY `FK_topic_TopicDetail` (`topic_id`),
   CONSTRAINT `FK_topic_TopicDetail` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `topic_teaching_activity`
+--
+
+DROP TABLE IF EXISTS `topic_teaching_activity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `topic_teaching_activity` (
+  `teaching_activity_id` int DEFAULT NULL,
+  `topic_id` int DEFAULT NULL,
+  KEY `fk_teaching_activity_topic_topic_idx` (`topic_id`),
+  KEY `fk_teaching_activity_teaching_activity_idx` (`teaching_activity_id`),
+  CONSTRAINT `fk_teaching_activity_teaching_activity` FOREIGN KEY (`teaching_activity_id`) REFERENCES `teaching_activity` (`id`),
+  CONSTRAINT `fk_teaching_activity_topic_topic` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1324,4 +1390,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-27 21:29:51
+-- Dump completed on 2025-03-27 22:53:56
