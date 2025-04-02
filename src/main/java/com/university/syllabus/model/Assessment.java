@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Assessment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
     private String type;
@@ -23,7 +24,7 @@ public class Assessment {
     @Column(name = "type_vn")
     private String typeVn;
     
-    @OneToMany(mappedBy = "assessment")
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private Set<CourseAssessment> courseAssessments = new HashSet<>();
 }

@@ -14,13 +14,13 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 public class CourseAssessment {
     @Id
-    @ManyToOne
-    @JoinColumn(name = "assessment_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assessment_id", referencedColumnName = "id")
     private Assessment assessment;
     
     @Id
-    @ManyToOne
-    @JoinColumn(name = "course_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
     
     private Integer percentage;
