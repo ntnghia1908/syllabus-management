@@ -18,6 +18,8 @@
 --
 -- Table structure for table `account`
 --
+create database `digit_curriculum`;
+use `digit_curriculum`;
 
 DROP TABLE IF EXISTS `account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -212,16 +214,17 @@ DROP TABLE IF EXISTS `class_session`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `class_session` (
-  `id` varchar(50) NOT NULL,
+  `id` varchar(255) NOT NULL,
   `course_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `instructor_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `semester` int DEFAULT NULL,
-  `academic_year` varchar(255) DEFAULT NULL,
-  `group_theory` int DEFAULT NULL,
-  `instructor_id` varchar(50) DEFAULT NULL,
+  `year` int DEFAULT NULL,
+  `group_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_classSession_course` (`course_id`),
-  KEY `FK_classSession_instructor_idx` (`instructor_id`),
-  CONSTRAINT `FK_classSession_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `FK_ClassSession_Course` (`course_id`),
+  KEY `FK_ClassSession_Instructor` (`instructor_id`),
+  CONSTRAINT `FK_ClassSession_Course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_ClassSession_Instructor` FOREIGN KEY (`instructor_id`) REFERENCES `instructor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -295,7 +298,8 @@ CREATE TABLE `course` (
   `credit_lab` varchar(255) DEFAULT NULL,
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_Course_CourseLevel` (`course_level_id`)
+  KEY `FK_Course_CourseLevel` (`course_level_id`),
+  CONSTRAINT `FK_Course_CourseLevel` FOREIGN KEY (`course_level_id`) REFERENCES `course_level` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -426,8 +430,7 @@ DROP TABLE IF EXISTS `course_level`;
 CREATE TABLE `course_level` (
   `id` int NOT NULL,
   `level` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_course_level_course` FOREIGN KEY (`id`) REFERENCES `course` (`course_level_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -648,7 +651,7 @@ DROP TABLE IF EXISTS `department_instructor`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `department_instructor` (
   `department_id` int NOT NULL,
-  `instructor_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `instructor_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   UNIQUE KEY `department_instructor_key` (`department_id`,`instructor_id`),
   KEY `FK_DepartmentInstructor_Instructor` (`instructor_id`),
   CONSTRAINT `FK_department_instructor_instructor` FOREIGN KEY (`instructor_id`) REFERENCES `instructor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -694,12 +697,12 @@ DROP TABLE IF EXISTS `instructor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `instructor` (
-  `id` varchar(50) NOT NULL DEFAULT '',
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `name` varchar(255) DEFAULT NULL,
   `degree` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1196,7 +1199,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=TEMPTABLE */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_4years_template` AS select `plan`.`year` AS `year`,`plan`.`semester` AS `semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,concat((`c`.`credit_theory` + `c`.`credit_lab`),' (',`c`.`credit_theory`,', ',`c`.`credit_lab`,')') AS `Credit`,concat(`p`.`name`,`p`.`version`) AS `Program` from (((`course` `c` join `course_pathway` `plan` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 1)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
+/*!50001 VIEW `curriculum_4years_template` AS select `plan`.`year` AS `year`,`plan`.`semester` AS `semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,concat((`c`.`credit_theory` + `c`.`credit_lab`),' (',`c`.`credit_theory`,', ',`c`.`credit_lab`,')') AS `Credit`,concat(`p`.`name`,`p`.`version`) AS `Program` from ((((`course` `c` join `course_pathway` `plan` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 1)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1214,7 +1217,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=TEMPTABLE */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_8semesters_template` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,concat((`c`.`credit_theory` + `c`.`credit_lab`),' (',`c`.`credit_theory`,', ',`c`.`credit_lab`,')') AS `Credit`,concat(`p`.`name`,`p`.`version`) AS `Program` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 1) and (`plan`.`program_id` = 4)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
+/*!50001 VIEW `curriculum_8semesters_template` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,concat((`c`.`credit_theory` + `c`.`credit_lab`),' (',`c`.`credit_theory`,', ',`c`.`credit_lab`,')') AS `Credit`,concat(`p`.`name`,`p`.`version`) AS `Program` from ((((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 1) and (`plan`.`program_id` = 4)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1268,7 +1271,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=TEMPTABLE */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `curriculum_cs_ae1_8semesters` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,(`c`.`credit_theory` + `c`.`credit_lab`) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 48)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
+/*!50001 VIEW `curriculum_cs_ae1_8semesters` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,`cp`.`course_code` AS `course_code`,`c`.`name` AS `Course Name`,(`c`.`credit_theory` + `c`.`credit_lab`) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 4)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1376,7 +1379,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=TEMPTABLE */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `total_credits_by_semester_ds` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,sum((`c`.`credit_theory` + `c`.`credit_lab`)) AS `Credits` from (((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 3) and (`plan`.`program_id` = 1)) group by (((`plan`.`year` - 1) * 2) + `plan`.`semester`) */;
+/*!50001 VIEW `total_credits_by_semester_ds` AS select (((`plan`.`year` - 1) * 2) + `plan`.`semester`) AS `Semester`,sum((`c`.`credit_theory` + `c`.`credit_lab`)) AS `Credits` from ((((`course_pathway` `plan` join `course` `c` on((`plan`.`course_id` = `c`.`id`))) join `program` `p` on((`plan`.`program_id` = `p`.`id`))) join `course_program` `cp` on(((`plan`.`program_id` = `cp`.`program_id`) and (`cp`.`course_id` = `plan`.`course_id`)))) where ((`plan`.`pathway_id` = 1) and (`plan`.`program_id` = 4)) order by `plan`.`year`,`plan`.`semester`,`cp`.`course_code` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
